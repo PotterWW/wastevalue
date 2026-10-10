@@ -4,7 +4,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from PIL import Image
 
 from .model import ModelUnavailable, get_predictor, load_json
@@ -37,6 +37,11 @@ def index():
     if not INDEX_HTML.exists():
         return error(404, "ไม่พบไฟล์ web/index.html")
     return FileResponse(INDEX_HTML)
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return Response(status_code=204)  # no icon; avoids a red 404 in the browser console
+
 
 @app.get("/api/health")
 def health():
