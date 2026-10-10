@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
+.env
+# ชุดข้อมูลภาพไม่เก็บใน repo (อยู่ใน Google Drive ของทีม)
+data/raw/
+*.zip

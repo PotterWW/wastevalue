@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>WasteValue AI</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600&amp;family=Prompt:wght@500;600;700&amp;display=swap">
+<style>
+body { margin: 0; font-family: 'Noto Sans Thai', system-ui, sans-serif; color: #3D4B44; background: #ffffff; }
+* { box-sizing: border-box; }
+h1, h2, h3, h4, p, ol, ul { margin: 0; }
+a { color: inherit; text-decoration: none; }
+.wv-display { font-family: 'Prompt', 'Noto Sans Thai', system-ui, sans-serif; }
+.wv-btn { font-family: 'Prompt', 'Noto Sans Thai', system-ui, sans-serif; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease, background .15s ease; }
+.wv-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(31, 122, 77, .22); }
+.wv-btn-primary:hover { background: #186540 !important; }
+.wv-btn-ghost:hover { background: #EAF6EE !important; }
+.wv-nav-link:hover { color: #1F7A4D; }
+.wv-nav-links { display: flex; align-items: center; gap: 28px; }
+.wv-burger { display: none; }
+.wv-lift { transition: transform .18s ease, box-shadow .18s ease; }
+.wv-lift:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(18, 59, 42, .12) !important; }
+.wv-tab { min-height: 44px; padding: 0 20px; border-radius: 999px; border: 1.5px solid #BFDCCB; background: #ffffff; color: #14432F; font-weight: 600; font-size: 15px; cursor: pointer; font-family: 'Prompt', 'Noto Sans Thai', system-ui, sans-serif; transition: background .15s ease; }
+.wv-tab:hover { background: #EAF6EE; }
+.wv-tab[aria-pressed="true"] { background: #14432F; color: #ffffff; border-color: #14432F; }
+.wv-drop { transition: background .15s ease, border-color .15s ease; }
+.wv-drop[data-drag="true"] { background: #DDF3E4 !important; border-color: #1F7A4D !important; border-style: solid !important; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; opacity: 0; }
+.wv-filebtn { position: relative; }
+.wv-filebtn:focus-within { outline: 3px solid #34B36B; outline-offset: 3px; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid #34B36B; outline-offset: 3px; }
+.wv-weight:focus { border-color: #1F7A4D !important; }
+@keyframes wv-scan {
+  0% { top: 4%; }
+  50% { top: 92%; }
+  100% { top: 4%; }
+}
+@keyframes wv-hero-scan {
+  0% { transform: translateY(-80px); }
+  50% { transform: translateY(100px); }
+  100% { transform: translateY(-80px); }
+}
+@keyframes wv-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes wv-float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+.wv-scan { animation: wv-scan 1.8s ease-in-out infinite; }
+.wv-hero-scan { animation: wv-hero-scan 3.2s ease-in-out infinite; }
+.wv-spin { animation: wv-spin .9s linear infinite; }
+.wv-float { animation: wv-float 5s ease-in-out infinite; }
+.wv-float-b { animation: wv-float 6s ease-in-out infinite; animation-delay: -2s; }
+@media (prefers-reduced-motion: reduce) {
+  .wv-scan, .wv-hero-scan, .wv-spin, .wv-float, .wv-float-b { animation: none; }
+}
+@media (max-width: 860px) {
+  .wv-nav-links { display: none; }
+  .wv-burger { display: inline-flex; }
+}
+@media (max-width: 560px) {
+  .wv-nav-cta { display: none !important; }
+}
+</style>
+</helmet>
+
+<div id="top" style="width:100%;background:#ffffff;overflow:hidden">
+
+  <!-- ============ NAVBAR ============ -->
+  <header style="background:#ffffff;border-bottom:1px solid #E2E8E4">
+    <nav aria-label="เมนูหลัก" style="max-width:1160px;width:100%;margin:0 auto;padding:0 24px;height:76px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+      <a href="#top" aria-label="WasteValue AI หน้าแรก" style="display:flex;align-items:center;gap:12px">
+        <span style="width:42px;height:42px;border-radius:14px;background:#1F7A4D;color:#ffffff;display:inline-flex;align-items:center;justify-content:center">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"></path><path d="M2 21c0-3 1.9-5.4 5.7-7.2 2.2-1 4.3-1.3 4.3-1.3"></path></svg>
+        </span>
+        <span class="wv-display" style="font-size:22px;font-weight:700;color:#123B2A;line-height:1.3">WasteValue <span style="color:#1F7A4D">AI</span></span>
+      </a>
+      <div class="wv-nav-links">
+        <a class="wv-nav-link" href="#top" style="font-size:15px;font-weight:500;color:#3D4B44;padding:12px 4px">Home</a>
+        <a class="wv-nav-link" href="#how" style="font-size:15px;font-weight:500;color:#3D4B44;padding:12px 4px">How It Works</a>
+        <a class="wv-nav-link" href="#guide" style="font-size:15px;font-weight:500;color:#3D4B44;padding:12px 4px">Waste Guide</a>
+        <a class="wv-nav-link" href="#about" style="font-size:15px;font-weight:500;color:#3D4B44;padding:12px 4px">About</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <a class="wv-btn wv-btn-primary wv-nav-cta" href="#upload" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 24px;border-radius:999px;background:#1F7A4D;color:#ffffff;font-size:15px;font-weight:600">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><path d="M7 12h10"></path></svg>
+          ตรวจสอบขยะ
+        </a>
+        <button class="wv-burger" type="button" aria-label="เปิดเมนู" aria-expanded="{{menuOpen}}" onClick="{{toggleMenu}}" style="width:46px;height:46px;border-radius:14px;border:1.5px solid #BFDCCB;background:#ffffff;color:#14432F;align-items:center;justify-content:center;cursor:pointer">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path></svg>
+        </button>
+      </div>
+    </nav>
+    <sc-if value="{{menuOpen}}" hint-placeholder-val="{{ false }}">
+      <div style="border-top:1px solid #E2E8E4;padding:8px 24px 20px;display:flex;flex-direction:column;gap:2px;background:#ffffff">
+        <a href="#top" onClick="{{closeMenu}}" style="min-height:48px;display:flex;align-items:center;font-weight:500;color:#123B2A">Home</a>
+        <a href="#how" onClick="{{closeMenu}}" style="min-height:48px;display:flex;align-items:center;font-weight:500;color:#123B2A">How It Works</a>
+        <a href="#guide" onClick="{{closeMenu}}" style="min-height:48px;display:flex;align-items:center;font-weight:500;color:#123B2A">Waste Guide</a>
+        <a href="#about" onClick="{{closeMenu}}" style="min-height:48px;display:flex;align-items:center;font-weight:500;color:#123B2A">About</a>
+        <a class="wv-btn wv-btn-primary" href="#upload" onClick="{{closeMenu}}" style="margin-top:8px;display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:999px;background:#1F7A4D;color:#ffffff;font-weight:600">ตรวจสอบขยะ</a>
+      </div>
+    </sc-if>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section style="background:#F2F9F4;border-radius:0 0 48px 48px;padding:56px 0 72px">
+    <div style="max-width:1160px;width:100%;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:48px;align-items:center">
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:24px">
+        <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px 8px 12px;border-radius:999px;background:#DDF3E4;color:#14532D;font-size:14px;font-weight:600">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"></path><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"></path></svg>
+          AI-powered Waste Classification
+        </span>
+        <h1 class="wv-display" style="font-size:clamp(32px,4.6vw,54px);line-height:1.32;font-weight:700;color:#123B2A;text-wrap:balance">ถ่ายรูปขยะ รู้ทันทีว่าคืออะไร <span style="color:#1F7A4D">ขายได้ไหม</span> และควรจัดการอย่างไร</h1>
+        <p style="font-size:18px;line-height:1.7;color:#3D4B44;max-width:520px;text-wrap:pretty">AI ช่วยจำแนกประเภทขยะ ประเมินมูลค่าขยะรีไซเคิล และแนะนำวิธีจัดการอย่างเหมาะสม</p>
+        <div style="display:flex;flex-wrap:wrap;gap:14px">
+          <a class="wv-btn wv-btn-primary" href="#upload" style="display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 32px;border-radius:999px;background:#1F7A4D;color:#ffffff;font-size:17px;font-weight:600">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M17 8l-5-5-5 5"></path><path d="M12 3v12"></path></svg>
+            อัปโหลดรูปขยะ
+          </a>
+          <a class="wv-btn wv-btn-ghost" href="#how" style="display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 30px;border-radius:999px;background:#ffffff;color:#14432F;border:1.5px solid #BFDCCB;font-size:17px;font-weight:600">ดูวิธีใช้งาน</a>
+        </div>
+        <ul style="list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:10px 22px;color:#14432F;font-size:15px;font-weight:500">
+          <li style="display:flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1F7A4D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>จำแนกประเภทขยะ</li>
+          <li style="display:flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1F7A4D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>ประเมินมูลค่า</li>
+          <li style="display:flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1F7A4D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>แนะนำวิธีจัดการ</li>
+        </ul>
+      </div>
+
+      <div style="position:relative;width:100%;max-width:540px;margin:0 auto">
+        <svg viewBox="0 0 520 470" width="100%" role="img" aria-label="ภาพประกอบ AI สแกนขวดพลาสติก พร้อมกระป๋อง ขวดแก้ว ลังกระดาษ และถังแยกขยะ" style="display:block;height:auto">
+          <circle cx="260" cy="225" r="205" fill="#E1F2E7"></circle>
+          <circle cx="260" cy="225" r="150" fill="#CFEBD9"></circle>
+          <ellipse cx="260" cy="442" rx="215" ry="14" fill="#123B2A" opacity=".1"></ellipse>
+          <!-- leaves -->
+          <path d="M70 128 C70 98 96 80 128 80 C128 112 108 136 70 128 Z" fill="#34B36B"></path>
+          <path d="M72 126 C90 110 106 98 124 84" stroke="#E1F2E7" stroke-width="3" fill="none" stroke-linecap="round"></path>
+          <path d="M428 168 C428 142 450 126 478 126 C478 154 460 176 428 168 Z" fill="#7BCB8E"></path>
+          <!-- recycle arrows -->
+          <path d="M68 214 A32 32 0 0 1 112 184" stroke="#1F7A4D" stroke-width="7" fill="none" stroke-linecap="round"></path>
+          <path d="M106 172 L126 186 L106 194 Z" fill="#1F7A4D" stroke="#1F7A4D" stroke-width="3" stroke-linejoin="round"></path>
+          <path d="M120 228 A32 32 0 0 1 76 258" stroke="#1F7A4D" stroke-width="7" fill="none" stroke-linecap="round"></path>
+          <path d="M82 270 L62 256 L82 248 Z" fill="#1F7A4D" stroke="#1F7A4D" stroke-width="3" stroke-linejoin="round"></path>
+          <!-- scanner frame -->
+          <path d="M150 78 V62 Q150 42 170 42 H190" stroke="#1F7A4D" stroke-width="6" fill="none" stroke-linecap="round"></path>
+          <path d="M370 78 V62 Q370 42 350 42 H330" stroke="#1F7A4D" stroke-width="6" fill="none" stroke-linecap="round"></path>
+          <path d="M150 244 V260 Q150 280 170 280 H190" stroke="#1F7A4D" stroke-width="6" fill="none" stroke-linecap="round"></path>
+          <path d="M370 244 V260 Q370 280 350 280 H330" stroke="#1F7A4D" stroke-width="6" fill="none" stroke-linecap="round"></path>
+          <rect x="228" y="26" width="64" height="30" rx="15" fill="#1F7A4D"></rect>
+          <text x="260" y="47" text-anchor="middle" font-family="Prompt, sans-serif" font-weight="700" font-size="15" fill="#ffffff">AI</text>
+          <!-- PET bottle -->
+          <rect x="247" y="60" width="26" height="14" rx="4" fill="#14432F"></rect>
+          <path d="M251 74 H269 V94 Q296 104 296 134 V250 Q296 266 280 266 H240 Q224 266 224 250 V134 Q224 104 251 94 Z" fill="#ffffff"></path>
+          <path d="M224 172 H296 V250 Q296 266 280 266 H240 Q224 266 224 250 Z" fill="#A9DDB9"></path>
+          <rect x="224" y="192" width="72" height="44" fill="#1F7A4D"></rect>
+          <path d="M260 199 C274 199 282 207 280 221 C266 223 255 215 255 205 Z" fill="#ffffff"></path>
+          <path d="M257 221 C262 213 268 208 276 204" stroke="#1F7A4D" stroke-width="2" fill="none" stroke-linecap="round"></path>
+          <path d="M251 74 H269 V94 Q296 104 296 134 V250 Q296 266 280 266 H240 Q224 266 224 250 V134 Q224 104 251 94 Z" fill="none" stroke="#14432F" stroke-width="3.5" stroke-linejoin="round"></path>
+          <path d="M236 118 V156" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity=".9"></path>
+          <!-- scan line -->
+          <g class="wv-hero-scan">
+            <rect x="146" y="150" width="228" height="30" fill="#34B36B" opacity=".18"></rect>
+            <rect x="146" y="148" width="228" height="4" rx="2" fill="#34B36B"></rect>
+          </g>
+          <!-- sparkles -->
+          <path d="M398 92 Q400 106 414 108 Q400 110 398 124 Q396 110 382 108 Q396 106 398 92 Z" fill="#1F7A4D"></path>
+          <path d="M112 300 Q113.5 309 123 311 Q113.5 313 112 322 Q110.5 313 101 311 Q110.5 309 112 300 Z" fill="#34B36B"></path>
+          <!-- aluminium can -->
+          <rect x="30" y="340" width="58" height="100" rx="9" fill="#E8EDEA" stroke="#14432F" stroke-width="3"></rect>
+          <ellipse cx="59" cy="340" rx="29" ry="7" fill="#F4F6F5" stroke="#14432F" stroke-width="3"></ellipse>
+          <rect x="31.5" y="372" width="55" height="34" fill="#1F7A4D"></rect>
+          <circle cx="59" cy="389" r="8" fill="#ffffff"></circle>
+          <!-- glass bottle -->
+          <path d="M112 337 H128 V354 Q140 362 140 378 V432 Q140 440 132 440 H108 Q100 440 100 432 V378 Q100 362 112 354 Z" fill="#7BCB8E" stroke="#14432F" stroke-width="3" stroke-linejoin="round"></path>
+          <path d="M110 384 V420" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity=".8"></path>
+          <!-- bins -->
+          <rect x="166" y="366" width="60" height="9" rx="4.5" fill="#14432F"></rect>
+          <path d="M172 375 H220 L216 440 H176 Z" fill="#1F7A4D"></path>
+          <path d="M196 394 C208 394 214 402 212 413 C201 414 192 408 192 399 Z" fill="#ffffff" opacity=".95"></path>
+          <rect x="228" y="366" width="60" height="9" rx="4.5" fill="#14432F"></rect>
+          <path d="M234 375 H282 L278 440 H238 Z" fill="#7BCB8E"></path>
+          <rect x="249" y="397" width="18" height="22" rx="3" fill="#ffffff" opacity=".9"></rect>
+          <rect x="290" y="366" width="60" height="9" rx="4.5" fill="#14432F"></rect>
+          <path d="M296 375 H344 L340 440 H300 Z" fill="#9AA8A0"></path>
+          <circle cx="320" cy="408" r="9" fill="#ffffff" opacity=".9"></circle>
+          <!-- cardboard box -->
+          <path d="M376 374 L388 358 H468 L480 374 Z" fill="#EBD3AE" stroke="#14432F" stroke-width="3" stroke-linejoin="round"></path>
+          <rect x="376" y="374" width="104" height="66" fill="#D9B98A" stroke="#14432F" stroke-width="3" stroke-linejoin="round"></rect>
+          <rect x="416" y="374" width="24" height="66" fill="#EBD3AE"></rect>
+          <rect x="376" y="374" width="104" height="66" fill="none" stroke="#14432F" stroke-width="3" stroke-linejoin="round"></rect>
+        </svg>
+
+        <div class="wv-float" style="position:absolute;top:2%;right:-2%;background:#ffffff;border-radius:18px;padding:10px 16px;box-shadow:0 12px 30px rgba(18,59,42,.14);display:flex;align-items:center;gap:10px">
+          <span style="width:34px;height:34px;border-radius:12px;background:#DDF3E4;color:#1F7A4D;display:inline-flex;align-items:center;justify-content:center">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
+          </span>
+          <span style="display:flex;flex-direction:column;line-height:1.35">
+            <span class="wv-display" style="font-size:14px;font-weight:600;color:#123B2A">ขวดพลาสติก PET</span>
+            <span style="font-size:12px;color:#5B6A62">AI มั่นใจ 93%</span>
+          </span>
+        </div>
+        <div class="wv-float-b" style="position:absolute;top:56%;left:-3%;background:#14432F;border-radius:18px;padding:10px 16px;box-shadow:0 12px 30px rgba(18,59,42,.2);display:flex;align-items:center;gap:10px;color:#ffffff">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#7BCB8E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M14.5 9a2.5 2 0 0 0-2.5-1.5c-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2A2.5 2 0 0 1 9.5 15"></path><path d="M12 6v1.5"></path><path d="M12 16.5V18"></path></svg>
+          <span style="display:flex;flex-direction:column;line-height:1.35">
+            <span class="wv-display" style="font-size:14px;font-weight:600">ขายได้</span>
+            <span style="font-size:12px;color:#CFE8D8">8–12 บาท / กก.</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ UPLOAD ============ -->
+  <section id="upload" style="padding:88px 0 80px;background:#ffffff">
+    <div style="max-width:880px;width:100%;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:32px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+        <span class="wv-display" style="font-size:14px;font-weight:600;color:#1F7A4D;letter-spacing:.04em">AI WASTE SCANNER</span>
+        <h2 class="wv-display" style="font-size:clamp(28px,3.6vw,40px);line-height:1.35;font-weight:700;color:#123B2A;text-wrap:balance">เริ่มตรวจสอบขยะของคุณ</h2>
+        <p style="font-size:17px;line-height:1.7;color:#3D4B44;max-width:560px;text-wrap:pretty">ถ่ายขยะ 1 ชิ้นให้เห็นชัดเจน แล้วอัปโหลดเพื่อให้ AI วิเคราะห์</p>
+      </div>
+
+      <div class="wv-drop" data-drag="{{dragging}}" onDragOver="{{onDragOver}}" onDragLeave="{{onDragLeave}}" onDrop="{{onDrop}}" style="background:#F4F9F5;border:2.5px dashed #7BCB8E;border-radius:32px;padding:clamp(24px,5vw,48px);min-height:360px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(18,59,42,.06)">
+
+        <sc-if value="{{noImage}}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
+            <div style="width:92px;height:92px;border-radius:50%;background:#DDF3E4;color:#1F7A4D;display:flex;align-items:center;justify-content:center">
+              <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M17 8l-5-5-5 5"></path><path d="M12 3v12"></path></svg>
+            </div>
+            <h3 class="wv-display" style="font-size:26px;line-height:1.4;font-weight:600;color:#123B2A">อัปโหลดรูปขยะของคุณ</h3>
+            <p style="font-size:16px;line-height:1.7;color:#3D4B44">ลากรูปมาวางตรงนี้ หรือกดปุ่มเพื่อเลือกไฟล์</p>
+            <label class="wv-filebtn wv-btn wv-btn-primary" style="display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:0 30px;border-radius:999px;background:#1F7A4D;color:#ffffff;font-size:16px;font-weight:600">
+              <input class="vh" type="file" accept="image/png,image/jpeg" onChange="{{onPick}}">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+              เลือกรูปภาพ
+            </label>
+            <p style="display:flex;align-items:center;gap:8px;font-size:14px;color:#5B6A62">
+              รองรับ JPG, PNG
+            </p>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{hasImage}}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%">
+            <div style="position:relative;display:inline-block;max-width:100%;line-height:0">
+              <img src="{{previewUrl}}" alt="ตัวอย่างรูปขยะที่อัปโหลด" style="display:block;max-width:100%;max-height:340px;border-radius:22px;object-fit:contain;background:#ffffff;box-shadow:0 8px 24px rgba(18,59,42,.14)">
+              <sc-if value="{{analyzing}}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute;top:0;left:0;right:0;bottom:0;border-radius:22px;background:rgba(18,59,42,.28);border:3px solid #34B36B;overflow:hidden">
+                  <div class="wv-scan" style="position:absolute;left:0;right:0;height:5px;background:#7DF0A8;box-shadow:0 0 22px 8px rgba(125,240,168,.65)"></div>
+                </div>
+              </sc-if>
+            </div>
+            <p style="font-size:14px;color:#5B6A62;word-break:break-all;text-align:center">{{fileName}}</p>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
+        <sc-if value="{{hasError}}" hint-placeholder-val="{{ false }}">
+          <p role="alert" style="display:flex;align-items:center;gap:8px;background:#FFF3E3;color:#8A3B05;border:1.5px solid #F4B66A;border-radius:14px;padding:10px 18px;font-size:15px;font-weight:500">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>
+            {{error}}
+          </p>
+        </sc-if>
+
+        <sc-if value="{{analyzing}}" hint-placeholder-val="{{ false }}">
+          <div role="status" aria-live="polite" style="display:inline-flex;align-items:center;gap:14px;min-height:60px;padding:0 30px;border-radius:999px;background:#EAF6EE;border:1.5px solid #BFDCCB;color:#14432F;font-size:17px;font-weight:600" class="wv-display">
+            <svg class="wv-spin" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#1F7A4D" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"></path></svg>
+            AI กำลังวิเคราะห์ขยะของคุณ...
+          </div>
+        </sc-if>
+
+        <sc-if value="{{notAnalyzing}}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px">
+            <sc-if value="{{hasImage}}" hint-placeholder-val="{{ false }}">
+              <label class="wv-filebtn wv-btn wv-btn-ghost" style="display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 28px;border-radius:999px;background:#ffffff;color:#14432F;border:1.5px solid #BFDCCB;font-size:16px;font-weight:600">
+                <input class="vh" type="file" accept="image/png,image/jpeg" onChange="{{onPick}}">
+                เปลี่ยนรูป
+              </label>
+            </sc-if>
+            <button class="wv-btn wv-btn-primary" type="button" onClick="{{onAnalyze}}" style="display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 34px;border-radius:999px;background:#1F7A4D;color:#ffffff;border:0;font-size:17px;font-weight:600">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"></path><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"></path></svg>
+              วิเคราะห์ด้วย AI
+            </button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULT ============ -->
+  <section id="result" style="padding:88px 0;background:#F4F8F5;border-radius:48px 48px 0 0">
+    <div style="max-width:1160px;width:100%;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:32px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+        <span class="wv-display" style="font-size:14px;font-weight:600;color:#1F7A4D;letter-spacing:.04em">ANALYSIS RESULT</span>
+        <h2 class="wv-display" style="font-size:clamp(28px,3.6vw,40px);line-height:1.35;font-weight:700;color:#123B2A;text-wrap:balance">ผลการวิเคราะห์</h2>
+        <sc-if value="{{analyzed}}" hint-placeholder-val="{{ false }}">
+          <p role="status" style="display:inline-flex;align-items:center;gap:8px;background:#DDF3E4;color:#14532D;border-radius:999px;padding:8px 18px;font-size:15px;font-weight:500;word-break:break-all">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
+            วิเคราะห์รูป {{fileName}} เสร็จแล้ว
+          </p>
+        </sc-if>
+        <div role="group" aria-label="เลือกดูตัวอย่างผลลัพธ์" style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px">
+          <button class="wv-tab" type="button" aria-pressed="{{isPet}}" onClick="{{pickPet}}">ขวด PET · ขายได้</button>
+          <button class="wv-tab" type="button" aria-pressed="{{isSnack}}" onClick="{{pickSnack}}">ซองขนม · ขายไม่ได้</button>
+          <button class="wv-tab" type="button" aria-pressed="{{isBattery}}" onClick="{{pickBattery}}">ถ่านไฟฉาย · ขยะอันตราย</button>
+        </div>
+        <p style="font-size:14px;line-height:1.6;color:#5B6A62;max-width:560px">โหมดสาธิต: ผลลัพธ์ที่แสดงเป็นข้อมูลตัวอย่าง ยังไม่ได้เชื่อมต่อกับโมเดล AI จริง</p>
+      </div>
+
+      <!-- ---------- STATE 1: SELLABLE (PET) ---------- -->
+      <sc-if value="{{isPet}}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:28px">
+          <article style="background:#ffffff;border:1px solid #E2E8E4;border-radius:32px;box-shadow:0 12px 40px rgba(18,59,42,.08);padding:clamp(20px,4vw,40px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:clamp(24px,4vw,48px)">
+            <div style="display:flex;flex-direction:column;gap:22px">
+              <div style="display:flex;align-items:center;gap:18px">
+                <div style="width:80px;height:80px;flex:none;border-radius:24px;background:#EAF6EE;color:#1F7A4D;display:flex;align-items:center;justify-content:center">
+                  <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2h5v2h-5z"></path><path d="M9.5 4h5l2.5 3v13a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V7z"></path><path d="M7 12h10"></path></svg>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <p style="font-size:14px;color:#5B6A62">ตรวจพบ</p>
+                  <h3 class="wv-display" style="font-size:clamp(26px,3.2vw,36px);line-height:1.35;font-weight:700;color:#123B2A">ขวดพลาสติก PET</h3>
+                </div>
+              </div>
+
+              <div class="wv-display" style="display:inline-flex;align-items:center;gap:12px;align-self:flex-start;background:#DDF3E4;color:#14532D;border:1.5px solid #A9DDB9;border-radius:999px;padding:10px 26px 10px 14px;font-size:24px;font-weight:600">
+                <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#1F7A4D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M8 12.5l3 3 5-6"></path></svg>
+                ขายได้
+              </div>
+
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:12px">
+                <div style="background:#F4F6F5;border-radius:16px;padding:12px 16px">
+                  <p style="font-size:12px;color:#5B6A62">Material Type</p>
+                  <p style="font-size:17px;font-weight:600;color:#123B2A">Plastic</p>
+                </div>
+                <div style="background:#F4F6F5;border-radius:16px;padding:12px 16px">
+                  <p style="font-size:12px;color:#5B6A62">ประเภทขยะ</p>
+                  <p style="font-size:17px;font-weight:600;color:#123B2A">ขยะรีไซเคิล</p>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:6px;max-width:320px">
+                <p style="display:flex;align-items:center;gap:6px;font-size:13px;color:#5B6A62">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"></path></svg>
+                  AI มั่นใจ 93%
+                </p>
+                <div style="height:8px;border-radius:999px;background:#E2E8E4;overflow:hidden"><div style="width:93%;height:100%;border-radius:999px;background:#34B36B"></div></div>
+              </div>
+            </div>
+
+            <div style="background:#EEF8F1;border-radius:24px;padding:clamp(18px,3vw,28px);display:flex;flex-direction:column;gap:20px">
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <p style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:500;color:#14432F">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"></path><circle cx="7" cy="7" r="1.2"></circle></svg>
+                  ราคารับซื้อโดยประมาณ
+                </p>
+                <p class="wv-display" style="font-size:clamp(30px,3.4vw,40px);line-height:1.35;font-weight:700;color:#123B2A">8–12 <span style="font-size:18px;font-weight:600;color:#3D4B44">บาท / กก.</span></p>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <label for="wv-weight" style="font-size:15px;font-weight:500;color:#14432F">น้ำหนักโดยประมาณ (กก.)</label>
+                <div style="display:flex;align-items:center;gap:10px;background:#ffffff;border:2px solid #BFDCCB;border-radius:16px;padding:0 18px;min-height:56px">
+                  <input id="wv-weight" class="wv-weight" type="number" inputmode="decimal" min="0" max="100000" step="0.1" value="{{weight}}" onInput="{{onWeight}}" style="flex:1;min-width:0;border:0;outline-offset:6px;background:transparent;font-size:22px;font-weight:600;color:#123B2A;font-family:'Prompt','Noto Sans Thai',sans-serif;padding:0">
+                  <span style="font-size:16px;color:#5B6A62">กก.</span>
+                </div>
+              </div>
+
+              <div role="status" aria-live="polite" style="background:#14432F;color:#ffffff;border-radius:20px;padding:18px 22px;display:flex;flex-direction:column;gap:2px">
+                <p style="font-size:15px;color:#CFE8D8">มูลค่าโดยประมาณ</p>
+                <p class="wv-display" style="font-size:clamp(34px,4vw,46px);line-height:1.3;font-weight:700">{{valueRange}} <span style="font-size:20px;font-weight:600">บาท</span></p>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <p style="display:flex;align-items:flex-start;gap:8px;font-size:13.5px;line-height:1.6;color:#3D4B44">
+                  <svg viewBox="0 0 24 24" width="18" height="18" style="flex:none;margin-top:2px" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                  ราคานี้เป็นราคาโดยประมาณและอาจแตกต่างกันตามร้านรับซื้อและช่วงเวลา
+                </p>
+                <p style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:#5B6A62">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg>
+                  อัปเดตราคาเมื่อ: 10 ตุลาคม 2026
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));gap:28px">
+            <!-- Preparation -->
+            <article style="background:#ffffff;border:1px solid #E2E8E4;border-radius:28px;box-shadow:0 10px 30px rgba(18,59,42,.06);padding:clamp(20px,3.5vw,32px);display:flex;flex-direction:column;gap:20px">
+              <h3 class="wv-display" style="font-size:24px;line-height:1.4;font-weight:600;color:#123B2A">คำแนะนำก่อนขาย</h3>
+              <ol style="list-style:none;padding:0;display:flex;flex-direction:column;gap:12px">
+                <li style="display:flex;align-items:center;gap:16px;background:#F4F9F5;border-radius:18px;padding:12px 16px">
+                  <span style="width:46px;height:46px;flex:none;border-radius:15px;background:#DDF3E4;color:#1F7A4D;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-4-7-13-7-13S5 11 5 15a7 7 0 0 0 7 7z"></path></svg></span>
+                  <span style="font-size:16px;line-height:1.5;color:#123B2A"><strong class="wv-display" style="color:#1F7A4D;margin-right:6px">1</strong>เทของเหลวออกให้หมด</span>
+                </li>
+                <li style="display:flex;align-items:center;gap:16px;background:#F4F9F5;border-radius:18px;padding:12px 16px">
+                  <span style="width:46px;height:46px;flex:none;border-radius:15px;background:#DDF3E4;color:#1F7A4D;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"></path><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"></path></svg></span>
+                  <span style="font-size:16px;line-height:1.5;color:#123B2A"><strong class="wv-display" style="color:#1F7A4D;margin-right:6px">2</strong>ล้างภาชนะให้สะอาด</span>
+                </li>
+                <li style="display:flex;align-items:center;gap:16px;background:#F4F9F5;border-radius:18px;padding:12px 16px">
+                  <span style="width:46px;height:46px;flex:none;border-radius:15px;background:#DDF3E4;color:#1F7A4D;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.9 4.9l1.4 1.4"></path><path d="M17.7 17.7l1.4 1.4"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M4.9 19.1l1.4-1.4"></path><path d="M17.7 6.3l1.4-1.4"></path></svg></span>
+                  <span style="font-size:16px;line-height:1.5;color:#123B2A"><strong class="wv-display" style="color:#1F7A4D;margin-right:6px">3</strong>ตากให้แห้ง</span>
+                </li>
+                <li style="display:flex;align-items:center;gap:16px;background:#F4F9F5;border-radius:18px;padding:12px 16px">
+                  <span style="width:46px;height:46px;flex:none;border-radius:15px;background:#DDF3E4;color:#1F7A4D;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"></path><path d="M8 3H3v5"></path><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"></path><path d="M15 9l6-6"></path></svg></span>
+                  <span style="font-size:16px;line-height:1.5;color:#123B2A"><strong class="wv-display" style="color:#1F7A4D;margin-right:6px">4</strong>แยกฝาขวดออกหากร้านรับซื้อแยกประเภท</span>
+                </li>
+              </ol>
+            </article>
+
+            <!-- Disposal -->
+            <article style="background:#ffffff;border:1px solid #E2E8E4;border-radius:28px;box-shadow:0 10px 30px rgba(18,59,42,.06);padding:clamp(20px,3.5vw,32px);display:flex;flex-direction:column;gap:20px">
+              <h3 class="wv-display" style="font-size:24px;line-height:1.4;font-weight:600;color:#123B2A">หากไม่ขาย ควรทิ้งอย่างไร</h3>
+              <div style="flex:1;display:flex;align-items:center;gap:22px;background:#EAF6EE;border-radius:22px;padding:24px;flex-wrap:wrap">
+                <svg viewBox="0 0 64 64" width="96" height="96" role="img" aria-label="ถังขยะรีไซเคิลสีเขียว" style="flex:none">
+                  <rect x="26" y="5" width="12" height="7" rx="3.5" fill="#14432F"></rect>
+                  <rect x="9" y="11" width="46" height="8" rx="4" fill="#14432F"></rect>
+                  <path d="M14 21 H50 L47 56 A3 3 0 0 1 44 59 H20 A3 3 0 0 1 17 56 Z" fill="#1F7A4D"></path>
+                  <path d="M25 40 A8 8 0 0 1 38 34" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"></path>
+                  <path d="M36 29 L42 35 L34 38 Z" fill="#ffffff"></path>
+                  <path d="M39 44 A8 8 0 0 1 26 50" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"></path>
+                  <path d="M28 55 L22 49 L30 46 Z" fill="#ffffff"></path>
+                </svg>
+                <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:6px">
+                  <p class="wv-display" style="font-size:22px;line-height:1.45;font-weight:600;color:#14432F">นำไปทิ้งในถังขยะรีไซเคิล</p>
+                  <p style="font-size:15px;line-height:1.6;color:#3D4B44">ทิ้งแยกจากขยะทั่วไป เพื่อให้วัสดุยังถูกนำกลับมารีไซเคิลได้</p>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ---------- STATE 2: NOT SELLABLE (SNACK WRAPPER) ---------- -->
+      <sc-if value="{{isSnack}}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:28px">
+          <article style="background:#ffffff;border:1px solid #E2E8E4;border-radius:32px;box-shadow:0 12px 40px rgba(18,59,42,.08);padding:clamp(20px,4vw,40px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:clamp(24px,4vw,48px)">
+            <div style="display:flex;flex-direction:column;gap:22px">
+              <div style="display:flex;align-items:center;gap:18px">
+                <div style="width:80px;height:80px;flex:none;border-radius:24px;background:#ECEFED;color:#4B5750;display:flex;align-items:center;justify-content:center">
+                  <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h14v3l-1 1v10l1 1v3H5v-3l1-1V7L5 6z"></path><path d="M9 11h6"></path><path d="M9 15h4"></path></svg>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <p style="font-size:14px;color:#5B6A62">ตรวจพบ</p>
+                  <h3 class="wv-display" style="font-size:clamp(26px,3.2vw,36px);line-height:1.35;font-weight:700;color:#123B2A">ซองขนม</h3>
+                </div>
+              </div>
+
+              <div class="wv-display" style="display:inline-flex;align-items:center;gap:12px;align-self:flex-start;background:#ECEFED;color:#3F4A44;border:1.5px solid #CBD3CE;border-radius:999px;padding:10px 26px 10px 14px;font-size:24px;font-weight:600">
+                <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#5B6A62" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M15 9l-6 6"></path><path d="M9 9l6 6"></path></svg>
+                ขายไม่ได้
+              </div>
+
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:12px">
+                <div style="background:#F4F6F5;border-radius:16px;padding:12px 16px">
+                  <p style="font-size:12px;color:#5B6A62">Material</p>
+                  <p style="font-size:17px;font-weight:600;color:#123B2A">Multi-layer Plastic</p>
+                </div>
+                <div style="background:#F4F6F5;border-radius:16px;padding:12px 16px">
+                  <p style="font-size:12px;color:#5B6A62">ประเภทขยะ</p>
+                  <p style="font-size:17px;font-weight:600;color:#123B2A">ขยะทั่วไป</p>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:6px;max-width:320px">
+                <p style="display:flex;align-items:center;gap:6px;font-size:13px;color:#5B6A62">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"></path></svg>
+                  AI มั่นใจ 88%
+                </p>
+                <div style="height:8px;border-radius:999px;background:#E2E8E4;overflow:hidden"><div style="width:88%;height:100%;border-radius:999px;background:#34B36B"></div></div>
+              </div>
+            </div>
+
+            <div style="background:#F4F6F5;border-radius:24px;padding:clamp(18px,3vw,28px);display:flex;flex-direction:column;justify-content:center;gap:12px">
+              <p style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:500;color:#3F4A44">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"></path><circle cx="7" cy="7" r="1.2"></circle></svg>
+                ราคารับซื้อ
+              </p>
+              <p class="wv-display" style="font-size:clamp(26px,3vw,34px);line-height:1.4;font-weight:700;color:#3F4A44">ไม่มีราคารับซื้อทั่วไป</p>
+              <p style="font-size:15px;line-height:1.7;color:#3D4B44">วัสดุหลายชั้นรีไซเคิลได้ยาก ร้านรับซื้อส่วนใหญ่จึงไม่รับซื้อ ดังนั้นไม่ต้องคำนวณมูลค่า</p>
+            </div>
+          </article>
+
+          <article style="background:#ffffff;border:2px solid #CFE3D6;border-radius:32px;box-shadow:0 12px 40px rgba(18,59,42,.08);padding:clamp(20px,4vw,40px);display:flex;flex-direction:column;gap:24px">
+            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+              <svg viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="ถังขยะทั่วไปสีเทา" style="flex:none">
+                <rect x="26" y="5" width="12" height="7" rx="3.5" fill="#3F4A44"></rect>
+                <rect x="9" y="11" width="46" height="8" rx="4" fill="#3F4A44"></rect>
+                <path d="M14 21 H50 L47 56 A3 3 0 0 1 44 59 H20 A3 3 0 0 1 17 56 Z" fill="#6B7871"></path>
+                <path d="M26 29 V50" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"></path>
+                <path d="M32 29 V50" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"></path>
+                <path d="M38 29 V50" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"></path>
+              </svg>
+              <h3 class="wv-display" style="font-size:clamp(24px,3vw,30px);line-height:1.4;font-weight:700;color:#123B2A">วิธีจัดการที่แนะนำ</h3>
+            </div>
+            <ol style="list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));gap:16px">
+              <li style="display:flex;flex-direction:column;gap:14px;background:#F4F6F5;border-radius:22px;padding:20px">
+                <span style="display:flex;align-items:center;justify-content:space-between">
+                  <span style="width:50px;height:50px;border-radius:16px;background:#ffffff;color:#3F4A44;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-4-7-13-7-13S5 11 5 15a7 7 0 0 0 7 7z"></path></svg></span>
+                  <span class="wv-display" style="font-size:22px;font-weight:700;color:#5B6A62">1</span>
+                </span>
+                <span style="font-size:16px;line-height:1.55;font-weight:500;color:#123B2A">เทเศษอาหารออก</span>
+              </li>
+              <li style="display:flex;flex-direction:column;gap:14px;background:#F4F6F5;border-radius:22px;padding:20px">
+                <span style="display:flex;align-items:center;justify-content:space-between">
+                  <span style="width:50px;height:50px;border-radius:16px;background:#ffffff;color:#3F4A44;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.9 4.9l1.4 1.4"></path><path d="M17.7 17.7l1.4 1.4"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M4.9 19.1l1.4-1.4"></path><path d="M17.7 6.3l1.4-1.4"></path></svg></span>
+                  <span class="wv-display" style="font-size:22px;font-weight:700;color:#5B6A62">2</span>
+                </span>
+                <span style="font-size:16px;line-height:1.55;font-weight:500;color:#123B2A">ทำให้แห้งเพื่อลดกลิ่น</span>
+              </li>
+              <li style="display:flex;flex-direction:column;gap:14px;background:#F4F6F5;border-radius:22px;padding:20px">
+                <span style="display:flex;align-items:center;justify-content:space-between">
+                  <span style="width:50px;height:50px;border-radius:16px;background:#ffffff;color:#3F4A44;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"></path><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></span>
+                  <span class="wv-display" style="font-size:22px;font-weight:700;color:#5B6A62">3</span>
+                </span>
+                <span style="font-size:16px;line-height:1.55;font-weight:500;color:#123B2A">ทิ้งในถังขยะทั่วไป</span>
+              </li>
+              <li style="display:flex;flex-direction:column;gap:14px;background:#FFF3E3;border:1.5px solid #F4B66A;border-radius:22px;padding:20px">
+                <span style="display:flex;align-items:center;justify-content:space-between">
+                  <span style="width:50px;height:50px;border-radius:16px;background:#ffffff;color:#B8430A;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M5.6 5.6l12.8 12.8"></path></svg></span>
+                  <span class="wv-display" style="font-size:22px;font-weight:700;color:#8A3B05">4</span>
+                </span>
+                <span style="font-size:16px;line-height:1.55;font-weight:600;color:#8A3B05">ไม่ควรใส่รวมกับขยะรีไซเคิล</span>
+              </li>
+            </ol>
+          </article>
+        </div>
+      </sc-if>
+
+      <!-- ---------- STATE 3: HAZARDOUS (BATTERY) ---------- -->
+      <sc-if value="{{isBattery}}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:28px">
+          <article style="background:#ffffff;border:2.5px solid #F4B66A;border-radius:32px;box-shadow:0 12px 40px rgba(184,67,10,.12);overflow:hidden">
+            <div role="alert" style="background:#FFF3E3;border-bottom:2px solid #F4B66A;padding:clamp(18px,3vw,28px) clamp(20px,4vw,40px);display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+              <span style="width:64px;height:64px;flex:none;border-radius:50%;background:#B8430A;color:#ffffff;display:inline-flex;align-items:center;justify-content:center">
+                <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+              </span>
+              <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:2px">
+                <p class="wv-display" style="font-size:clamp(22px,3vw,30px);line-height:1.4;font-weight:700;color:#8A3B05">ห้ามทิ้งรวมกับขยะทั่วไป</p>
+                <p style="font-size:15px;line-height:1.6;color:#6B2D04">ขยะอันตรายต้องแยกทิ้งและส่งไปจุดรับที่เหมาะสม</p>
+              </div>
+            </div>
+
+            <div style="padding:clamp(20px,4vw,40px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:clamp(24px,4vw,48px)">
+              <div style="display:flex;flex-direction:column;gap:22px">
+                <div style="display:flex;align-items:center;gap:18px">
+                  <div style="width:80px;height:80px;flex:none;border-radius:24px;background:#FFEBD3;color:#B8430A;display:flex;align-items:center;justify-content:center">
+                    <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="18" height="10" rx="2"></rect><path d="M22 11v2"></path><path d="M6 11v2"></path><path d="M10 11v2"></path></svg>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:2px">
+                    <p style="font-size:14px;color:#5B6A62">ตรวจพบ</p>
+                    <h3 class="wv-display" style="font-size:clamp(26px,3.2vw,36px);line-height:1.35;font-weight:700;color:#123B2A">ถ่านไฟฉายใช้แล้ว</h3>
+                  </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:12px">
+                  <div style="background:#F4F6F5;border-radius:16px;padding:12px 16px">
+                    <p style="font-size:12px;color:#5B6A62">Material</p>
+                    <p style="font-size:17px;font-weight:600;color:#123B2A">Battery</p>
+                  </div>
+                  <div style="background:#FFF3E3;border:1.5px solid #F4B66A;border-radius:16px;padding:12px 16px">
+                    <p style="font-size:12px;color:#8A3B05">ประเภทขยะ</p>
+                    <p style="font-size:17px;font-weight:700;color:#8A3B05">ขยะอันตราย</p>
+                  </div>
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:6px;max-width:320px">
+                  <p style="display:flex;align-items:center;gap:6px;font-size:13px;color:#5B6A62">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"></path></svg>
+                    AI มั่นใจ 91%
+                  </p>
+                  <div style="height:8px;border-radius:999px;background:#E2E8E4;overflow:hidden"><div style="width:91%;height:100%;border-radius:999px;background:#34B36B"></div></div>
+                </div>
+
+                <div style="display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center">
+                  <span style="display:inline-flex;align-items:center;gap:8px;background:#ECEFED;color:#3F4A44;border:1.5px solid #CBD3CE;border-radius:999px;padding:6px 16px 6px 10px;font-size:16px;font-weight:600" class="wv-display">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#5B6A62" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M15 9l-6 6"></path><path d="M9 9l6 6"></path></svg>
+                    ขายไม่ได้
+                  </span>
+                  <span style="font-size:15px;color:#3D4B44">ไม่มีราคารับซื้อทั่วไป</span>
+                </div>
+              </div>
+
+              <div style="background:#FFF8EE;border-radius:24px;padding:clamp(18px,3vw,28px);display:flex;flex-direction:column;gap:16px">
+                <h4 class="wv-display" style="font-size:22px;line-height:1.4;font-weight:600;color:#8A3B05">คำแนะนำ</h4>
+                <ol style="list-style:none;padding:0;display:flex;flex-direction:column;gap:12px">
+                  <li style="display:flex;align-items:center;gap:16px;background:#ffffff;border:1.5px solid #F8D3A3;border-radius:18px;padding:12px 16px">
+                    <span style="width:46px;height:46px;flex:none;border-radius:15px;background:#FFEBD3;color:#B8430A;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M5.6 5.6l12.8 12.8"></path></svg></span>
+                    <span style="font-size:16px;line-height:1.5;font-weight:600;color:#6B2D04">ห้ามแกะหรือเผา</span>
+                  </li>
+                  <li style="display:flex;align-items:center;gap:16px;background:#ffffff;border:1.5px solid #F8D3A3;border-radius:18px;padding:12px 16px">
+                    <span style="width:46px;height:46px;flex:none;border-radius:15px;background:#FFEBD3;color:#B8430A;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>
+                    <span style="font-size:16px;line-height:1.5;font-weight:600;color:#6B2D04">แยกเก็บให้ปลอดภัย</span>
+                  </li>
+                  <li style="display:flex;align-items:center;gap:16px;background:#ffffff;border:1.5px solid #F8D3A3;border-radius:18px;padding:12px 16px">
+                    <span style="width:46px;height:46px;flex:none;border-radius:15px;background:#FFEBD3;color:#B8430A;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
+                    <span style="font-size:16px;line-height:1.5;font-weight:600;color:#6B2D04">นำไปยังจุดรับทิ้งขยะอันตราย</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </article>
+        </div>
+      </sc-if>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section id="how" style="padding:88px 0;background:#ffffff">
+    <div style="max-width:1160px;width:100%;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:44px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+        <span class="wv-display" style="font-size:14px;font-weight:600;color:#1F7A4D;letter-spacing:.04em">HOW IT WORKS</span>
+        <h2 class="wv-display" style="font-size:clamp(28px,3.6vw,40px);line-height:1.35;font-weight:700;color:#123B2A;text-wrap:balance">ใช้งานง่ายใน 4 ขั้นตอน</h2>
+      </div>
+      <ol style="list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:20px">
+        <li class="wv-lift" style="background:#F4F9F5;border:1px solid #D5EADD;border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:16px;box-shadow:0 6px 20px rgba(18,59,42,.05)">
+          <span style="display:flex;align-items:center;justify-content:space-between">
+            <span style="width:60px;height:60px;border-radius:20px;background:#1F7A4D;color:#ffffff;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></span>
+            <span class="wv-display" style="font-size:36px;font-weight:700;color:#BFDCCB">1</span>
+          </span>
+          <h3 class="wv-display" style="font-size:21px;line-height:1.4;font-weight:600;color:#123B2A">อัปโหลดรูป</h3>
+          <p style="font-size:15.5px;line-height:1.7;color:#3D4B44">อัปโหลดรูปขยะ 1 ชิ้น</p>
+        </li>
+        <li class="wv-lift" style="background:#F4F9F5;border:1px solid #D5EADD;border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:16px;box-shadow:0 6px 20px rgba(18,59,42,.05)">
+          <span style="display:flex;align-items:center;justify-content:space-between">
+            <span style="width:60px;height:60px;border-radius:20px;background:#1F7A4D;color:#ffffff;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"></path><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"></path></svg></span>
+            <span class="wv-display" style="font-size:36px;font-weight:700;color:#BFDCCB">2</span>
+          </span>
+          <h3 class="wv-display" style="font-size:21px;line-height:1.4;font-weight:600;color:#123B2A">AI วิเคราะห์</h3>
+          <p style="font-size:15.5px;line-height:1.7;color:#3D4B44">AI ระบุวัสดุและประเภทของขยะ</p>
+        </li>
+        <li class="wv-lift" style="background:#F4F9F5;border:1px solid #D5EADD;border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:16px;box-shadow:0 6px 20px rgba(18,59,42,.05)">
+          <span style="display:flex;align-items:center;justify-content:space-between">
+            <span style="width:60px;height:60px;border-radius:20px;background:#1F7A4D;color:#ffffff;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M14.5 9a2.5 2 0 0 0-2.5-1.5c-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2A2.5 2 0 0 1 9.5 15"></path><path d="M12 6v1.5"></path><path d="M12 16.5V18"></path></svg></span>
+            <span class="wv-display" style="font-size:36px;font-weight:700;color:#BFDCCB">3</span>
+          </span>
+          <h3 class="wv-display" style="font-size:21px;line-height:1.4;font-weight:600;color:#123B2A">ดูมูลค่า</h3>
+          <p style="font-size:15.5px;line-height:1.7;color:#3D4B44">ตรวจสอบว่าขายได้ไหม และดูราคาโดยประมาณ</p>
+        </li>
+        <li class="wv-lift" style="background:#F4F9F5;border:1px solid #D5EADD;border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:16px;box-shadow:0 6px 20px rgba(18,59,42,.05)">
+          <span style="display:flex;align-items:center;justify-content:space-between">
+            <span style="width:60px;height:60px;border-radius:20px;background:#1F7A4D;color:#ffffff;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"></path><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 14l2 2 4-4"></path></svg></span>
+            <span class="wv-display" style="font-size:36px;font-weight:700;color:#BFDCCB">4</span>
+          </span>
+          <h3 class="wv-display" style="font-size:21px;line-height:1.4;font-weight:600;color:#123B2A">จัดการให้ถูกต้อง</h3>
+          <p style="font-size:15.5px;line-height:1.7;color:#3D4B44">ทำตามคำแนะนำสำหรับการขาย รีไซเคิล หรือทิ้ง</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ CATEGORIES ============ -->
+  <section id="guide" style="padding:88px 0;background:#F4F8F5;border-radius:48px 48px 0 0">
+    <div style="max-width:1160px;width:100%;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:44px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+        <span class="wv-display" style="font-size:14px;font-weight:600;color:#1F7A4D;letter-spacing:.04em">WASTE GUIDE</span>
+        <h2 class="wv-display" style="font-size:clamp(28px,3.6vw,40px);line-height:1.35;font-weight:700;color:#123B2A;text-wrap:balance">ประเภทขยะที่รองรับ</h2>
+      </div>
+      <ul style="list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:20px">
+        <li class="wv-lift" style="background:#ffffff;border:1px solid #E2E8E4;border-radius:26px;padding:24px;display:flex;flex-direction:column;gap:16px;box-shadow:0 6px 20px rgba(18,59,42,.05)">
+          <span style="width:58px;height:58px;border-radius:19px;background:#DDF1EF;color:#14432F;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2h5v2h-5z"></path><path d="M9.5 4h5l2.5 3v13a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V7z"></path><path d="M7 12h10"></path></svg></span>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <h3 class="wv-display" style="font-size:20px;line-height:1.4;font-weight:600;color:#123B2A">พลาสติก</h3>
+            <p style="font-size:13px;color:#5B6A62">Plastic</p>
+          </div>
+          <p style="font-size:14.5px;line-height:1.65;color:#3D4B44">ขวดน้ำดื่ม ขวดแชมพู ถาดพลาสติก</p>
+        </li>
+        <li class="wv-lift" style="background:#ffffff;border:1px solid #E2E8E4;border-radius:26px;padding:24px;display:flex;flex-direction:column;gap:16px;box-shadow:0 6px 20px rgba(18,59,42,.05)">
+          <span style="width:58px;height:58px;border-radius:19px;background:#DDF1EF;color:#14432F;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2h4v6c0 1 2.5 2.5 2.5 4.5V20a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-7.5C7.5 10.5 10 9 10 8z"></path><path d="M7.5 15h9"></path></svg></span>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <h3 class="wv-display" style="font-size:20px;line-height:1.4;font-weight:600;color:#123B2A">แก้ว</h3>
+            <p style="font-size:13px;color:#5B6A62">Glass</p>
+          </div>
+          <p style="font-size:14.5px;line-height:1.65;color:#3D4B44">ขวดน้ำปลา ขวดเบียร์ ขวดแยม</p>
+        </li>
+        <li class="wv-lift" style="background:#ffffff;border:1px solid #E2E8E4;border-radius:26px;padding:24px;display:flex;flex-direction:column;gap:16px;box-shadow:0 6px 20px rgba(18,59,42,.05)">
+          <span style="width:58px;height:58px;border-radius:19px;background:#E8ECEA;color:#14432F;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5.5" rx="6" ry="2.5"></ellipse><path d="M6 5.5v13c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-13"></path><path d="M6 12c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5"></path></svg></span>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <h3 class="wv-display" style="font-size:20px;line-height:1.4;font-weight:600;color:#123B2A">โลหะ</h3>
+            <p style="font-size:13px;color:#5B6A62">Metal</p>
+          </div>
+          <p style="font-size:14.5px;line-height:1.65;color:#3D4B44">กระป๋องอะลูมิเนียม กระป๋องอาหาร ฝาโลหะ</p>
+        </li>
+        <li class="wv-lift" style="background:#ffffff;border:1px solid #E2E8E4;border-radius:26px;padding:24px;display:flex;flex-direction:column;gap:16px;box-shadow:0 6px 20px rgba(18,59,42,.05)">
+          <span style="width:58px;height:58px;border-radius:19px;background:#EEF3DA;color:#14432F;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"></path><path d="M14 2v5h5"></path><path d="M9 13h6"></path><path d="M9 17h6"></path></svg></span>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <h3 class="wv-display" style="font-size:20px;line-height:1.4;font-weight:600;color:#123B2A">กระดาษ</h3>
+            <p style="font-size:13px;color:#5B6A62">Paper</p>
+          </div>
+          <p style="font-size:14.5px;line-height:1.65;color:#3D4B44">หนังสือพิมพ์ สมุด กระดาษ A4</p>
+        </li>
+        <li class="wv-lift" style="background:#ffffff;border:1px solid #E2E8E4;border-radius:26px;padding:24px;display:flex;flex-direction:column;gap:16px;box-shadow:0 6px 20px rgba(18,59,42,.05)">
+          <span style="width:58px;height:58px;border-radius:19px;background:#F5EBD8;color:#14432F;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"></path><path d="M3 8l9 5 9-5"></path><path d="M12 13v8"></path></svg></span>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <h3 class="wv-display" style="font-size:20px;line-height:1.4;font-weight:600;color:#123B2A">กล่องกระดาษ</h3>
+            <p style="font-size:13px;color:#5B6A62">Cardboard</p>
+          </div>
+          <p style="font-size:14.5px;line-height:1.65;color:#3D4B44">กล่องพัสดุ ลังกระดาษ กล่องรองเท้า</p>
+        </li>
+        <li class="wv-lift" style="background:#ffffff;border:1px solid #E2E8E4;border-radius:26px;padding:24px;display:flex;flex-direction:column;gap:16px;box-shadow:0 6px 20px rgba(18,59,42,.05)">
+          <span style="width:58px;height:58px;border-radius:19px;background:#DFF3E4;color:#14432F;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"></path><path d="M2 21c0-3 1.9-5.4 5.7-7.2 2.2-1 4.3-1.3 4.3-1.3"></path></svg></span>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <h3 class="wv-display" style="font-size:20px;line-height:1.4;font-weight:600;color:#123B2A">ขยะอินทรีย์</h3>
+            <p style="font-size:13px;color:#5B6A62">Organic Waste</p>
+          </div>
+          <p style="font-size:14.5px;line-height:1.65;color:#3D4B44">เศษอาหาร เปลือกผลไม้ ใบไม้</p>
+        </li>
+        <li class="wv-lift" style="background:#ffffff;border:1px solid #E2E8E4;border-radius:26px;padding:24px;display:flex;flex-direction:column;gap:16px;box-shadow:0 6px 20px rgba(18,59,42,.05)">
+          <span style="width:58px;height:58px;border-radius:19px;background:#E8ECEA;color:#14432F;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"></path><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></span>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <h3 class="wv-display" style="font-size:20px;line-height:1.4;font-weight:600;color:#123B2A">ขยะทั่วไป</h3>
+            <p style="font-size:13px;color:#5B6A62">General Waste</p>
+          </div>
+          <p style="font-size:14.5px;line-height:1.65;color:#3D4B44">ซองขนม โฟมใส่อาหาร ทิชชู่ใช้แล้ว</p>
+        </li>
+        <li class="wv-lift" style="background:#FFF8EE;border:1px solid #F8D3A3;border-radius:26px;padding:24px;display:flex;flex-direction:column;gap:16px;box-shadow:0 6px 20px rgba(184,67,10,.07)">
+          <span style="width:58px;height:58px;border-radius:19px;background:#FFEBD3;color:#B8430A;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></span>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <h3 class="wv-display" style="font-size:20px;line-height:1.4;font-weight:600;color:#8A3B05">ขยะอันตราย</h3>
+            <p style="font-size:13px;color:#6B2D04">Hazardous Waste</p>
+          </div>
+          <p style="font-size:14.5px;line-height:1.65;color:#3D4B44">ถ่านไฟฉาย หลอดไฟ กระป๋องสเปรย์</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ IMPACT ============ -->
+  <section id="about" style="padding:88px 0;background:#14432F;color:#ffffff">
+    <div style="max-width:1160px;width:100%;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:44px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+        <span class="wv-display" style="font-size:14px;font-weight:600;color:#7BCB8E;letter-spacing:.04em">ENVIRONMENTAL IMPACT</span>
+        <h2 class="wv-display" style="font-size:clamp(28px,3.8vw,44px);line-height:1.35;font-weight:700;color:#ffffff;text-wrap:balance">แยกให้ถูก เพิ่มมูลค่า ลดขยะ</h2>
+      </div>
+      <ul style="list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:20px">
+        <li style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:18px">
+          <span style="width:56px;height:56px;border-radius:18px;background:#7BCB8E;color:#14432F;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"></path><path d="M2 21c0-3 1.9-5.4 5.7-7.2 2.2-1 4.3-1.3 4.3-1.3"></path></svg></span>
+          <p class="wv-display" style="font-size:19px;line-height:1.6;font-weight:500;color:#ffffff">เพิ่มโอกาสนำขยะกลับมารีไซเคิล</p>
+        </li>
+        <li style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:18px">
+          <span style="width:56px;height:56px;border-radius:18px;background:#7BCB8E;color:#14432F;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg></span>
+          <p class="wv-display" style="font-size:19px;line-height:1.6;font-weight:500;color:#ffffff">ลดการปนเปื้อนของขยะรีไซเคิล</p>
+        </li>
+        <li style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:18px">
+          <span style="width:56px;height:56px;border-radius:18px;background:#7BCB8E;color:#14432F;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M14.5 9a2.5 2 0 0 0-2.5-1.5c-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2A2.5 2 0 0 1 9.5 15"></path><path d="M12 6v1.5"></path><path d="M12 16.5V18"></path></svg></span>
+          <p class="wv-display" style="font-size:19px;line-height:1.6;font-weight:500;color:#ffffff">ช่วยให้ผู้ใช้เห็นมูลค่าของวัสดุที่กำลังจะทิ้ง</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer style="background:#F4F6F5;padding:56px 0 40px">
+    <div style="max-width:1160px;width:100%;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:36px">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:32px">
+        <div style="display:flex;flex-direction:column;gap:12px;max-width:380px">
+          <a href="#top" style="display:flex;align-items:center;gap:12px">
+            <span style="width:42px;height:42px;border-radius:14px;background:#1F7A4D;color:#ffffff;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"></path><path d="M2 21c0-3 1.9-5.4 5.7-7.2 2.2-1 4.3-1.3 4.3-1.3"></path></svg></span>
+            <span class="wv-display" style="font-size:22px;font-weight:700;color:#123B2A;line-height:1.3">WasteValue <span style="color:#1F7A4D">AI</span></span>
+          </a>
+          <p style="font-size:15px;line-height:1.7;color:#3D4B44">AI-powered Waste Classification &amp; Recycling Assistant</p>
+        </div>
+        <nav aria-label="เมนูท้ายหน้า" style="display:flex;flex-wrap:wrap;gap:4px 28px">
+          <a class="wv-nav-link" href="#top" style="font-size:15px;font-weight:500;color:#3D4B44;padding:12px 0">Home</a>
+          <a class="wv-nav-link" href="#how" style="font-size:15px;font-weight:500;color:#3D4B44;padding:12px 0">How It Works</a>
+          <a class="wv-nav-link" href="#guide" style="font-size:15px;font-weight:500;color:#3D4B44;padding:12px 0">Waste Guide</a>
+          <a class="wv-nav-link" href="#about" style="font-size:15px;font-weight:500;color:#3D4B44;padding:12px 0">About</a>
+        </nav>
+      </div>
+      <p style="display:flex;align-items:flex-start;gap:10px;border-top:1px solid #DDE3DF;padding-top:24px;font-size:13.5px;line-height:1.7;color:#5B6A62">
+        <svg viewBox="0 0 24 24" width="18" height="18" style="flex:none;margin-top:3px" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+        โปรเจกต์นี้จัดทำเพื่อการศึกษา ราคาขยะเป็นข้อมูลประมาณการและไม่ใช่ราคารับซื้อที่รับประกัน
+      </p>
+    </div>
+  </footer>
+</div>
+</x-dc>
+
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":5300}}'>
+class Component extends DCLogic {
+  getS() {
+    return Object.assign({
+      menuOpen: false,
+      previewUrl: '',
+      fileName: '',
+      dragging: false,
+      analyzing: false,
+      analyzed: false,
+      error: '',
+      sample: 'pet',
+      runs: 0,
+      weight: '2.5'
+    }, this.state || {});
+  }
+
+  componentWillUnmount() {
+    if (this._timer) clearTimeout(this._timer);
+  }
+
+  handleFile(file) {
+    if (!file) return;
+    const okType = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!okType) {
+      this.setState({ error: 'รองรับเฉพาะไฟล์ JPG และ PNG เท่านั้น' });
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      this.setState({ error: 'ไฟล์ใหญ่เกิน 10 MB กรุณาเลือกรูปที่เล็กลง' });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.setState({ previewUrl: String(reader.result), fileName: file.name, error: '', analyzed: false, analyzing: false });
+    };
+    reader.onerror = () => {
+      this.setState({ error: 'เปิดไฟล์ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง' });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  renderVals() {
+    const s = this.getS();
+    const w = parseFloat(s.weight);
+    const okWeight = isFinite(w) && w > 0;
+    const fmt = (v) => String(Math.round(v * 10) / 10);
+    const valueRange = okWeight ? fmt(w * 8) + '–' + fmt(w * 12) : '—';
+
+    return {
+      menuOpen: s.menuOpen,
+      toggleMenu: () => this.setState({ menuOpen: !this.getS().menuOpen }),
+      closeMenu: () => this.setState({ menuOpen: false }),
+
+      dragging: s.dragging,
+      hasImage: !!s.previewUrl,
+      noImage: !s.previewUrl,
+      previewUrl: s.previewUrl,
+      fileName: s.fileName,
+      analyzing: s.analyzing,
+      notAnalyzing: !s.analyzing,
+      analyzed: s.analyzed && !!s.previewUrl,
+      hasError: !!s.error,
+      error: s.error,
+
+      onPick: (e) => {
+        const f = e.target.files && e.target.files[0];
+        this.handleFile(f);
+        try { e.target.value = ''; } catch (x) { /* ignore */ }
+      },
+      onDragOver: (e) => {
+        e.preventDefault();
+        if (!this.getS().dragging) this.setState({ dragging: true });
+      },
+      onDragLeave: () => this.setState({ dragging: false }),
+      onDrop: (e) => {
+        e.preventDefault();
+        this.setState({ dragging: false });
+        const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        this.handleFile(f);
+      },
+
+      onAnalyze: () => {
+        const cur = this.getS();
+        if (cur.analyzing) return;
+        if (!cur.previewUrl) {
+          this.setState({ error: 'กรุณาอัปโหลดรูปขยะก่อนกดวิเคราะห์' });
+          return;
+        }
+        this.setState({ analyzing: true, error: '' });
+        this._timer = setTimeout(() => {
+          const order = ['pet', 'snack', 'battery'];
+          const n = this.getS().runs;
+          this.setState({ analyzing: false, analyzed: true, sample: order[n % 3], runs: n + 1 });
+          try {
+            const el = document.getElementById('result');
+            if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } catch (x) { /* ignore */ }
+        }, 2400);
+      },
+
+      isPet: s.sample === 'pet',
+      isSnack: s.sample === 'snack',
+      isBattery: s.sample === 'battery',
+      pickPet: () => this.setState({ sample: 'pet' }),
+      pickSnack: () => this.setState({ sample: 'snack' }),
+      pickBattery: () => this.setState({ sample: 'battery' }),
+
+      weight: s.weight,
+      onWeight: (e) => this.setState({ weight: e.target.value }),
+      valueRange: valueRange
+    };
+  }
+}
+</script>
+</body>
+</html>

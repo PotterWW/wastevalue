@@ -1,0 +1,81 @@
+{
+  "_note": "price_min/price_max/price_source/price_date เป็น null ให้ทีมกรอกจากแหล่งจริง ห้ามเดา",
+  "battery": {
+    "label_th": "แบตเตอรี่ / ถ่านไฟฉาย", "material": null, "sellable": false,
+    "price_min": null, "price_max": null, "price_source": null, "price_date": null,
+    "prep_steps": ["ห้ามแกะ เจาะ หรือเผา", "พันขั้วด้วยเทปถ้ามีขั้วโลหะโผล่", "แยกเก็บในกล่องหรือถุงของตัวเอง"],
+    "disposal": "นำไปทิ้งที่จุดรับขยะอันตราย"
+  },
+  "biological": {
+    "label_th": "ขยะอินทรีย์ / เศษอาหาร", "material": null, "sellable": false,
+    "price_min": null, "price_max": null, "price_source": null, "price_date": null,
+    "prep_steps": ["แยกออกจากถุงพลาสติกและภาชนะ", "สะเด็ดน้ำออกก่อนทิ้ง", "นำไปทำปุ๋ยหมักได้ถ้ามีพื้นที่"],
+    "disposal": "ทิ้งในถังขยะอินทรีย์"
+  },
+  "brown-glass": {
+    "label_th": "ขวดแก้วสีชา", "material": "แก้วสีชา", "sellable": true,
+    "price_min": null, "price_max": null, "price_source": null, "price_date": null,
+    "prep_steps": ["เทของเหลวออกให้หมด", "ล้างให้สะอาด", "แยกฝาออก", "ระวังอย่าให้แตก"],
+    "disposal": "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล"
+  },
+  "cardboard": {
+    "label_th": "กล่องกระดาษ", "material": "กระดาษลัง", "sellable": true,
+    "price_min": null, "price_max": null, "price_source": null, "price_date": null,
+    "prep_steps": ["แกะเทปและสติกเกอร์ออก", "พับให้แบน", "เก็บให้แห้ง ไม่โดนน้ำ"],
+    "disposal": "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล"
+  },
+  "clothes": {
+    "label_th": "เสื้อผ้า", "material": null, "sellable": false,
+    "price_min": null, "price_max": null, "price_source": null, "price_date": null,
+    "prep_steps": ["ถ้ายังใส่ได้ ให้บริจาค", "ซักให้สะอาดก่อนบริจาค", "ผ้าที่ใช้ไม่ได้แล้ว นำไปเป็นผ้าขี้ริ้วได้"],
+    "disposal": "ถ้าใช้ต่อไม่ได้ ทิ้งในถังขยะทั่วไป"
+  },
+  "green-glass": {
+    "label_th": "ขวดแก้วสีเขียว", "material": "แก้วสีเขียว", "sellable": true,
+    "price_min": null, "price_max": null, "price_source": null, "price_date": null,
+    "prep_steps": ["เทของเหลวออกให้หมด", "ล้างให้สะอาด", "แยกฝาออก", "ระวังอย่าให้แตก"],
+    "disposal": "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล"
+  },
+  "metal": {
+    "label_th": "โลหะ / กระป๋อง", "material": "โลหะ", "sellable": true,
+    "price_min": null, "price_max": null, "price_source": null, "price_date": null,
+    "prep_steps": ["เทของเหลวออกให้หมด", "ล้างให้สะอาด", "บีบกระป๋องให้แบนเพื่อประหยัดที่"],
+    "disposal": "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล"
+  },
+  "paper": {
+    "label_th": "กระดาษ", "material": "กระดาษ", "sellable": true,
+    "price_min": null, "price_max": null, "price_source": null, "price_date": null,
+    "prep_steps": ["แยกกระดาษที่เปื้อนน้ำมันหรืออาหารออก", "เอาลวดเย็บและคลิปออก", "เก็บให้แห้ง"],
+    "disposal": "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล"
+  },
+  "plastic": {
+    "label_th": "พลาสติก", "material": "พลาสติก", "sellable": true,
+    "price_min": null, "price_max": null, "price_source": null, "price_date": null,
+    "prep_steps": ["เทของเหลวออกให้หมด", "ล้างให้สะอาด", "ตากให้แห้ง", "แยกฝาและฉลากออกถ้าร้านรับซื้อแยกประเภท"],
+    "disposal": "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล"
+  },
+  "shoes": {
+    "label_th": "รองเท้า", "material": null, "sellable": false,
+    "price_min": null, "price_max": null, "price_source": null, "price_date": null,
+    "prep_steps": ["ถ้ายังใส่ได้ ให้บริจาค", "ทำความสะอาดก่อนบริจาค"],
+    "disposal": "ถ้าใช้ต่อไม่ได้ ทิ้งในถังขยะทั่วไป"
+  },
+  "trash_general": {
+    "label_th": "ขยะทั่วไป", "material": null, "sellable": false,
+    "price_min": null, "price_max": null, "price_source": null, "price_date": null,
+    "prep_steps": ["เทเศษอาหารหรือของเหลวออก", "ทำให้แห้งเพื่อลดกลิ่น", "ไม่ใส่รวมกับขยะรีไซเคิล"],
+    "disposal": "ทิ้งในถังขยะทั่วไป"
+  },
+  "trash_infectious": {
+    "label_th": "ขยะติดเชื้อ", "material": null, "sellable": false,
+    "price_min": null, "price_max": null, "price_source": null, "price_date": null,
+    "prep_steps": ["ม้วนหรือห่อให้มิดชิด", "ใส่ถุงแยกและปิดปากถุงให้สนิท", "เขียนหน้าถุงว่า \"ขยะติดเชื้อ\"", "ล้างมือหลังจับ"],
+    "disposal": "ทิ้งแยกตามจุดที่ท้องถิ่นกำหนด ห้ามปนกับขยะรีไซเคิล"
+  },
+  "white-glass": {
+    "label_th": "ขวดแก้วใส", "material": "แก้วใส", "sellable": true,
+    "price_min": null, "price_max": null, "price_source": null, "price_date": null,
+    "prep_steps": ["เทของเหลวออกให้หมด", "ล้างให้สะอาด", "แยกฝาออก", "ระวังอย่าให้แตก"],
+    "disposal": "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล"
+  }
+}
