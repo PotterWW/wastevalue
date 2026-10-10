@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WasteValue AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600&family=Prompt:wght@500;600;700&display=swap">
+<style>
+/* Layout: แปลงจาก design/Main.dc.html — section เต็มความกว้าง เนื้อหากว้างสุด 1160px (อัปโหลด 880px) */
+:root {
+  --green-700: #1F7A4D; --green-800: #186540; --green-900: #14432F; --ink: #123B2A;
+  --text: #3D4B44; --muted: #5B6A62; --green-500: #34B36B; --green-300: #7BCB8E;
+  --green-200: #BFDCCB; --green-100: #DDF3E4; --green-75: #EAF6EE; --green-50: #F2F9F4;
+  --line: #E2E8E4; --surface-2: #F4F6F5; --page-alt: #F4F8F5; --white: #FFFFFF;
+  --warn-bg: #FFF3E3; --warn-soft: #FFF8EE; --warn-line: #F4B66A; --warn-line-2: #F8D3A3;
+  --warn-text: #8A3B05; --warn-deep: #6B2D04; --warn-strong: #B8430A; --warn-icon-bg: #FFEBD3;
+  --gray-bg: #ECEFED; --gray-line: #CBD3CE; --gray-text: #3F4A44;
+  --olive-bg: #EEF3DA;
+  --bin-recycle: #E0A81E; --bin-organic: #1F7A4D; --bin-general: #2F5E9E; --bin-hazard: #C0392B; --bin-infect: #B8430A;
+  --display: 'Prompt', 'Noto Sans Thai', system-ui, sans-serif;
+  --body: 'Noto Sans Thai', system-ui, sans-serif;
+  --shadow-card: 0 12px 40px rgba(18,59,42,.08);
+  --shadow-soft: 0 10px 30px rgba(18,59,42,.06);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; font-family: var(--body); color: var(--text); background: var(--white); line-height: 1.6; }
+h1, h2, h3, h4, p, ol, ul { margin: 0; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+.wv-display { font-family: var(--display); }
+.container { max-width: 1160px; width: 100%; margin: 0 auto; padding-inline: 24px; }
+.container.narrow { max-width: 880px; }
+.section { padding-block: 88px; }
+.section-head { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.eyebrow { font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--green-700); letter-spacing: .04em; }
+.h2 { font-family: var(--display); font-size: clamp(28px, 3.6vw, 40px); line-height: 1.35; font-weight: 700; color: var(--ink); text-wrap: balance; }
+.lead { font-size: 17px; line-height: 1.7; color: var(--text); max-width: 560px; text-wrap: pretty; }
+
+/* ปุ่ม */
+.btn { font-family: var(--display); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; border-radius: 999px; font-weight: 600; border: 0; transition: transform .15s ease, box-shadow .15s ease, background .15s ease; }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(31,122,77,.22); }
+.btn-primary { background: var(--green-700); color: var(--white); }
+.btn-primary:hover { background: var(--green-800); }
+.btn-ghost { background: var(--white); color: var(--green-900); border: 1.5px solid var(--green-200); }
+.btn-ghost:hover { background: var(--green-75); }
+.btn-lg { min-height: 56px; padding: 0 32px; font-size: 17px; }
+.btn-md { min-height: 54px; padding: 0 30px; font-size: 16px; }
+.btn[disabled] { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+.filebtn { position: relative; }
+.filebtn:focus-within { outline: 3px solid var(--green-500); outline-offset: 3px; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; opacity: 0; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--green-500); outline-offset: 3px; }
+
+/* Navbar */
+header.nav { background: var(--white); border-bottom: 1px solid var(--line); }
+.nav-row { height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark { width: 42px; height: 42px; border-radius: 14px; background: var(--green-700); color: var(--white); display: inline-flex; align-items: center; justify-content: center; }
+.brand-name { font-family: var(--display); font-size: 22px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.brand-name span { color: var(--green-700); }
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-link { font-size: 15px; font-weight: 500; color: var(--text); padding: 12px 4px; }
+.nav-link:hover { color: var(--green-700); }
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+.nav-cta { min-height: 46px; padding: 0 24px; font-size: 15px; gap: 8px; }
+.burger { display: none; width: 46px; height: 46px; border-radius: 14px; border: 1.5px solid var(--green-200); background: var(--white); color: var(--green-900); align-items: center; justify-content: center; cursor: pointer; }
+.mobile-menu { border-top: 1px solid var(--line); padding: 8px 24px 20px; display: flex; flex-direction: column; gap: 2px; background: var(--white); }
+.mobile-menu a { min-height: 48px; display: flex; align-items: center; font-weight: 500; color: var(--ink); }
+.mobile-menu .btn { margin-top: 8px; min-height: 50px; color: var(--white); justify-content: center; }
+@media (max-width: 860px) { .nav-links { display: none; } .burger { display: inline-flex; } }
+@media (max-width: 560px) { .nav-cta { display: none !important; } }
+
+/* Hero */
+.hero { background: var(--green-50); border-radius: 0 0 48px 48px; padding-block: 56px 72px; }
+.hero-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr)); gap: 48px; align-items: center; }
+.hero-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+.chip-tag { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px 8px 12px; border-radius: 999px; background: var(--green-100); color: #14532D; font-size: 14px; font-weight: 600; }
+.hero h1 { font-family: var(--display); font-size: clamp(32px, 4.6vw, 54px); line-height: 1.32; font-weight: 700; color: var(--ink); text-wrap: balance; }
+.hero h1 span { color: var(--green-700); }
+.hero-sub { font-size: 18px; line-height: 1.7; max-width: 520px; text-wrap: pretty; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 14px; }
+.ticks { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 22px; color: var(--green-900); font-size: 15px; font-weight: 500; }
+.ticks li { display: flex; align-items: center; gap: 8px; }
+.hero-art { position: relative; width: 100%; max-width: 540px; margin: 0 auto; }
+.float-card { position: absolute; border-radius: 18px; padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
+.float-a { top: 2%; right: -2%; background: var(--white); box-shadow: 0 12px 30px rgba(18,59,42,.14); }
+.float-b { top: 56%; left: -3%; background: var(--green-900); color: var(--white); box-shadow: 0 12px 30px rgba(18,59,42,.2); }
+.float-card .t1 { font-family: var(--display); font-size: 14px; font-weight: 600; }
+.float-card .t2 { font-size: 12px; }
+
+/* Upload */
+.drop { background: #F4F9F5; border: 2.5px dashed var(--green-300); border-radius: 32px; padding: clamp(24px, 5vw, 48px); min-height: 360px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-soft); transition: background .15s ease, border-color .15s ease; }
+.drop.dragging { background: var(--green-100); border-color: var(--green-700); border-style: solid; }
+.drop-empty { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+.drop-icon { width: 92px; height: 92px; border-radius: 50%; background: var(--green-100); color: var(--green-700); display: flex; align-items: center; justify-content: center; }
+.drop-empty h3 { font-family: var(--display); font-size: 26px; line-height: 1.4; font-weight: 600; color: var(--ink); }
+.tips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.tip { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--green-900); background: var(--white); border: 1px solid var(--green-200); border-radius: 999px; padding: 4px 12px; }
+.preview { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
+.preview-frame { position: relative; display: inline-block; max-width: 100%; line-height: 0; }
+.preview-frame img { display: block; max-width: 100%; max-height: 340px; border-radius: 22px; object-fit: contain; background: var(--white); box-shadow: 0 8px 24px rgba(18,59,42,.14); }
+.scan-overlay { position: absolute; inset: 0; border-radius: 22px; background: rgba(18,59,42,.28); border: 3px solid var(--green-500); overflow: hidden; }
+.scan-line { position: absolute; left: 0; right: 0; height: 5px; background: #7DF0A8; box-shadow: 0 0 22px 8px rgba(125,240,168,.65); animation: wv-scan 1.8s ease-in-out infinite; }
+.fname { font-size: 14px; color: var(--muted); word-break: break-all; text-align: center; }
+.upload-actions { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.row-wrap { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.alert { display: flex; align-items: center; gap: 8px; background: var(--warn-bg); color: var(--warn-text); border: 1.5px solid var(--warn-line); border-radius: 14px; padding: 10px 18px; font-size: 15px; font-weight: 500; }
+.analyzing { display: inline-flex; align-items: center; gap: 14px; min-height: 60px; padding: 0 30px; border-radius: 999px; background: var(--green-75); border: 1.5px solid var(--green-200); color: var(--green-900); font-size: 17px; font-weight: 600; font-family: var(--display); }
+.spin { animation: wv-spin .9s linear infinite; }
+
+/* Result */
+.result-sec { background: var(--page-alt); border-radius: 48px 48px 0 0; }
+.result-wrap { display: flex; flex-direction: column; gap: 32px; }
+.status-chip { display: inline-flex; align-items: center; gap: 8px; background: var(--green-100); color: #14532D; border-radius: 999px; padding: 8px 18px; font-size: 15px; font-weight: 500; word-break: break-all; }
+.demo-note { font-size: 14px; line-height: 1.6; color: var(--muted); max-width: 600px; }
+.mode-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--warn-text); background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 999px; padding: 4px 12px; }
+.tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.tab { min-height: 44px; padding: 0 20px; border-radius: 999px; border: 1.5px solid var(--green-200); background: var(--white); color: var(--green-900); font-weight: 600; font-size: 15px; cursor: pointer; font-family: var(--display); }
+.tab:hover { background: var(--green-75); }
+.tab[aria-pressed="true"] { background: var(--green-900); color: var(--white); border-color: var(--green-900); }
+.empty-result { background: var(--white); border: 1.5px dashed var(--green-200); border-radius: 32px; padding: 48px 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; color: var(--muted); }
+.empty-result h3 { font-family: var(--display); font-size: 22px; color: var(--ink); font-weight: 600; }
+
+.card { background: var(--white); border: 1px solid var(--line); border-radius: 32px; box-shadow: var(--shadow-card); }
+.card.warn { border: 2.5px solid var(--warn-line); box-shadow: 0 12px 40px rgba(184,67,10,.12); overflow: hidden; }
+.warn-head { background: var(--warn-bg); border-bottom: 2px solid var(--warn-line); padding: clamp(18px,3vw,28px) clamp(20px,4vw,40px); display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.warn-head .ic { width: 64px; height: 64px; flex: none; border-radius: 50%; background: var(--warn-strong); color: var(--white); display: inline-flex; align-items: center; justify-content: center; }
+.warn-head .tx { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 2px; }
+.warn-head .t1 { font-family: var(--display); font-size: clamp(22px,3vw,30px); line-height: 1.4; font-weight: 700; color: var(--warn-text); }
+.warn-head .t2 { font-size: 15px; line-height: 1.6; color: var(--warn-deep); }
+.main-grid { padding: clamp(20px,4vw,40px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px,100%),1fr)); gap: clamp(24px,4vw,48px); }
+.col { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.ident { display: flex; align-items: center; gap: 18px; }
+.ident-tile { width: 80px; height: 80px; flex: none; border-radius: 24px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.ident-tile img { width: 100%; height: 100%; object-fit: cover; }
+.ident small { font-size: 14px; color: var(--muted); }
+.ident h3 { font-family: var(--display); font-size: clamp(26px,3.2vw,36px); line-height: 1.35; font-weight: 700; color: var(--ink); }
+.pill { font-family: var(--display); display: inline-flex; align-items: center; gap: 12px; align-self: flex-start; border-radius: 999px; padding: 10px 26px 10px 14px; font-size: 24px; font-weight: 600; }
+.pill.sell { background: var(--green-100); color: #14532D; border: 1.5px solid #A9DDB9; }
+.pill.nosell { background: var(--gray-bg); color: var(--gray-text); border: 1.5px solid var(--gray-line); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px,100%),1fr)); gap: 12px; }
+.tile { background: var(--surface-2); border-radius: 16px; padding: 12px 16px; }
+.tile .k { font-size: 12px; color: var(--muted); }
+.tile .v { font-size: 17px; font-weight: 600; color: var(--ink); }
+.tile.warn { background: var(--warn-bg); border: 1.5px solid var(--warn-line); }
+.tile.warn .k, .tile.warn .v { color: var(--warn-text); }
+.conf { display: flex; flex-direction: column; gap: 6px; max-width: 320px; }
+.conf p { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+.bar { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.bar > i { display: block; height: 100%; border-radius: 999px; background: var(--green-500); }
+.runner { font-size: 14px; color: var(--muted); }
+.runner b { color: var(--ink); font-weight: 600; }
+.panel { border-radius: 24px; padding: clamp(18px,3vw,28px); display: flex; flex-direction: column; gap: 20px; }
+.panel.green { background: #EEF8F1; }
+.panel.gray { background: var(--surface-2); justify-content: center; gap: 12px; }
+.panel.warn { background: var(--warn-soft); }
+.panel-label { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; color: var(--green-900); }
+.price { font-family: var(--display); font-size: clamp(30px,3.4vw,40px); line-height: 1.35; font-weight: 700; color: var(--ink); }
+.price span { font-size: 18px; font-weight: 600; color: var(--text); }
+.price.na { font-size: clamp(22px,2.6vw,28px); color: var(--gray-text); }
+.weight { display: flex; flex-direction: column; gap: 8px; }
+.weight label { font-size: 15px; font-weight: 500; color: var(--green-900); }
+.weight-box { display: flex; align-items: center; gap: 10px; background: var(--white); border: 2px solid var(--green-200); border-radius: 16px; padding: 0 18px; min-height: 56px; }
+.weight-box:focus-within { border-color: var(--green-700); }
+.weight-box input { flex: 1; min-width: 0; border: 0; outline-offset: 6px; background: transparent; font-size: 22px; font-weight: 600; color: var(--ink); font-family: var(--display); padding: 0; }
+.weight-box span { font-size: 16px; color: var(--muted); }
+.value { background: var(--green-900); color: var(--white); border-radius: 20px; padding: 18px 22px; display: flex; flex-direction: column; gap: 2px; }
+.value .k { font-size: 15px; color: #CFE8D8; }
+.value .v { font-family: var(--display); font-size: clamp(34px,4vw,46px); line-height: 1.3; font-weight: 700; font-variant-numeric: tabular-nums; }
+.value .v span { font-size: 20px; font-weight: 600; }
+.notes { display: flex; flex-direction: column; gap: 8px; }
+.notes p { display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; line-height: 1.6; color: var(--text); }
+.notes p.muted { color: var(--muted); align-items: center; }
+.na-title { font-family: var(--display); font-size: clamp(26px,3vw,34px); line-height: 1.4; font-weight: 700; color: var(--gray-text); }
+.lower { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(360px,100%),1fr)); gap: 28px; }
+.sub-card { background: var(--white); border: 1px solid var(--line); border-radius: 28px; box-shadow: var(--shadow-soft); padding: clamp(20px,3.5vw,32px); display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.sub-card.warn { border: 1.5px solid var(--warn-line-2); background: var(--warn-soft); }
+.sub-card h3 { font-family: var(--display); font-size: 24px; line-height: 1.4; font-weight: 600; color: var(--ink); }
+.sub-card.warn h3 { color: var(--warn-text); }
+.steps { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.steps li { display: flex; align-items: center; gap: 16px; background: #F4F9F5; border-radius: 18px; padding: 12px 16px; }
+.steps .n { width: 46px; height: 46px; flex: none; border-radius: 15px; background: var(--green-100); color: var(--green-700); display: inline-flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 700; font-size: 18px; }
+.steps .s { font-size: 16px; line-height: 1.5; color: var(--ink); }
+.sub-card.warn .steps li { background: var(--white); border: 1.5px solid var(--warn-line-2); }
+.sub-card.warn .steps .n { background: var(--warn-icon-bg); color: var(--warn-strong); }
+.sub-card.warn .steps .s { color: var(--warn-deep); font-weight: 600; }
+.bin-box { flex: 1; display: flex; align-items: center; gap: 22px; border-radius: 22px; padding: 24px; flex-wrap: wrap; }
+.bin-box .tx { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 6px; }
+.bin-box .t1 { font-family: var(--display); font-size: 22px; line-height: 1.45; font-weight: 600; color: var(--green-900); }
+.bin-box .t2 { font-size: 15px; line-height: 1.6; color: var(--text); }
+.uncertain-tips { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.uncertain-tips li { background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; font-size: 15px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+.guess { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--white); border-radius: 16px; padding: 12px 16px; border: 1px solid var(--line); }
+.guess b { font-family: var(--display); color: var(--ink); font-size: 17px; }
+.guess span { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* How + Guide + Impact + Footer */
+.grid-4 { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px,100%),1fr)); gap: 20px; }
+.lift { transition: transform .18s ease, box-shadow .18s ease; }
+.lift:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(18,59,42,.12) !important; }
+.how-card { background: #F4F9F5; border: 1px solid #D5EADD; border-radius: 28px; padding: 28px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 6px 20px rgba(18,59,42,.05); }
+.how-top { display: flex; align-items: center; justify-content: space-between; }
+.how-ic { width: 60px; height: 60px; border-radius: 20px; background: var(--green-700); color: var(--white); display: inline-flex; align-items: center; justify-content: center; }
+.how-n { font-family: var(--display); font-size: 36px; font-weight: 700; color: var(--green-200); }
+.how-card h3, .guide-card h3 { font-family: var(--display); font-size: 21px; line-height: 1.4; font-weight: 600; color: var(--ink); }
+.how-card p { font-size: 15.5px; line-height: 1.7; }
+.guide-sec { background: var(--page-alt); border-radius: 48px 48px 0 0; }
+.guide-grid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px,100%),1fr)); gap: 20px; }
+.guide-card { background: var(--white); border: 1px solid var(--line); border-radius: 26px; padding: 24px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 6px 20px rgba(18,59,42,.05); }
+.guide-card.warn { background: var(--warn-soft); border-color: var(--warn-line-2); }
+.guide-card.warn h3 { color: var(--warn-text); }
+.guide-head { display: flex; align-items: center; gap: 14px; }
+.guide-ic { width: 58px; height: 58px; flex: none; border-radius: 19px; display: inline-flex; align-items: center; justify-content: center; }
+.guide-card .en { font-size: 13px; color: var(--muted); }
+.guide-card .bin-line { font-size: 14px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; flex: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips span { font-size: 13px; background: var(--surface-2); color: var(--gray-text); border-radius: 999px; padding: 3px 10px; }
+.guide-card.warn .chips span { background: var(--white); }
+.impact { background: var(--green-900); color: var(--white); }
+.impact .eyebrow { color: var(--green-300); }
+.impact .h2 { color: var(--white); font-size: clamp(28px,3.8vw,44px); }
+.impact-grid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px,100%),1fr)); gap: 20px; }
+.impact-grid li { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); border-radius: 28px; padding: 28px; display: flex; flex-direction: column; gap: 18px; }
+.impact-grid .ic { width: 56px; height: 56px; border-radius: 18px; background: var(--green-300); color: var(--green-900); display: inline-flex; align-items: center; justify-content: center; }
+.impact-grid p { font-family: var(--display); font-size: 19px; line-height: 1.6; font-weight: 500; }
+footer { background: var(--surface-2); padding-block: 56px 40px; }
+.foot-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 32px; }
+.foot-note { display: flex; align-items: flex-start; gap: 10px; border-top: 1px solid #DDE3DF; padding-top: 24px; font-size: 13.5px; line-height: 1.7; color: var(--muted); }
+
+@keyframes wv-scan { 0% { top: 4%; } 50% { top: 92%; } 100% { top: 4%; } }
+@keyframes wv-hero-scan { 0% { transform: translateY(-80px); } 50% { transform: translateY(100px); } 100% { transform: translateY(-80px); } }
+@keyframes wv-spin { to { transform: rotate(360deg); } }
+@keyframes wv-float { 0% { transform: translateY(0); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0); } }
+.hero-scan { animation: wv-hero-scan 3.2s ease-in-out infinite; }
+.float-a { animation: wv-float 5s ease-in-out infinite; }
+.float-b { animation: wv-float 6s ease-in-out infinite; animation-delay: -2s; }
+@media (prefers-reduced-motion: reduce) {
+  .scan-line, .hero-scan, .spin, .float-a, .float-b { animation: none; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+<div id="top">
+
+<!-- ============ NAVBAR ============ -->
+<header class="nav">
+  <nav class="container nav-row" aria-label="เมนูหลัก">
+    <a class="brand" href="#top" aria-label="WasteValue AI หน้าแรก">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.4 5.7-7.2 2.2-1 4.3-1.3 4.3-1.3"/></svg></span>
+      <span class="brand-name">WasteValue <span>AI</span></span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="#top">Home</a>
+      <a class="nav-link" href="#how">How It Works</a>
+      <a class="nav-link" href="#guide">Waste Guide</a>
+      <a class="nav-link" href="#about">About</a>
+    </div>
+    <div class="nav-actions">
+      <a class="btn btn-primary nav-cta" href="#upload">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></svg>
+        ตรวจสอบขยะ
+      </a>
+      <button class="burger" id="burger" type="button" aria-label="เปิดเมนู" aria-expanded="false" aria-controls="mobileMenu">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu" hidden>
+    <a href="#top">Home</a><a href="#how">How It Works</a><a href="#guide">Waste Guide</a><a href="#about">About</a>
+    <a class="btn btn-primary" href="#upload">ตรวจสอบขยะ</a>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="chip-tag">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>
+        AI-powered Waste Classification
+      </span>
+      <h1>ถ่ายรูปขยะ รู้ทันทีว่าคืออะไร <span>ขายได้ไหม</span> และควรจัดการอย่างไร</h1>
+      <p class="hero-sub">AI ช่วยจำแนกประเภทขยะ ประเมินมูลค่าขยะรีไซเคิล และแนะนำวิธีจัดการอย่างเหมาะสม</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="#upload">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
+          อัปโหลดรูปขยะ
+        </a>
+        <a class="btn btn-ghost btn-lg" href="#how">ดูวิธีใช้งาน</a>
+      </div>
+      <ul class="ticks">
+        <li><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1F7A4D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>จำแนกประเภทขยะ</li>
+        <li><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1F7A4D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>ประเมินมูลค่า</li>
+        <li><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1F7A4D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>แนะนำวิธีจัดการ</li>
+      </ul>
+    </div>
+
+    <div class="hero-art">
+      <svg viewBox="0 0 520 470" width="100%" role="img" aria-label="ภาพประกอบ AI สแกนขวดพลาสติก พร้อมกระป๋อง ขวดแก้ว ลังกระดาษ และถังแยกขยะ" style="display:block;height:auto">
+        <circle cx="260" cy="225" r="205" fill="#E1F2E7"/>
+        <circle cx="260" cy="225" r="150" fill="#CFEBD9"/>
+        <ellipse cx="260" cy="442" rx="215" ry="14" fill="#123B2A" opacity=".1"/>
+        <path d="M70 128 C70 98 96 80 128 80 C128 112 108 136 70 128 Z" fill="#34B36B"/>
+        <path d="M72 126 C90 110 106 98 124 84" stroke="#E1F2E7" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M428 168 C428 142 450 126 478 126 C478 154 460 176 428 168 Z" fill="#7BCB8E"/>
+        <path d="M68 214 A32 32 0 0 1 112 184" stroke="#1F7A4D" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M106 172 L126 186 L106 194 Z" fill="#1F7A4D" stroke="#1F7A4D" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M120 228 A32 32 0 0 1 76 258" stroke="#1F7A4D" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M82 270 L62 256 L82 248 Z" fill="#1F7A4D" stroke="#1F7A4D" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M150 78 V62 Q150 42 170 42 H190" stroke="#1F7A4D" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M370 78 V62 Q370 42 350 42 H330" stroke="#1F7A4D" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M150 244 V260 Q150 280 170 280 H190" stroke="#1F7A4D" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M370 244 V260 Q370 280 350 280 H330" stroke="#1F7A4D" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <rect x="228" y="26" width="64" height="30" rx="15" fill="#1F7A4D"/>
+        <text x="260" y="47" text-anchor="middle" font-family="Prompt, sans-serif" font-weight="700" font-size="15" fill="#ffffff">AI</text>
+        <rect x="247" y="60" width="26" height="14" rx="4" fill="#14432F"/>
+        <path d="M251 74 H269 V94 Q296 104 296 134 V250 Q296 266 280 266 H240 Q224 266 224 250 V134 Q224 104 251 94 Z" fill="#ffffff"/>
+        <path d="M224 172 H296 V250 Q296 266 280 266 H240 Q224 266 224 250 Z" fill="#A9DDB9"/>
+        <rect x="224" y="192" width="72" height="44" fill="#1F7A4D"/>
+        <path d="M260 199 C274 199 282 207 280 221 C266 223 255 215 255 205 Z" fill="#ffffff"/>
+        <path d="M257 221 C262 213 268 208 276 204" stroke="#1F7A4D" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M251 74 H269 V94 Q296 104 296 134 V250 Q296 266 280 266 H240 Q224 266 224 250 V134 Q224 104 251 94 Z" fill="none" stroke="#14432F" stroke-width="3.5" stroke-linejoin="round"/>
+        <path d="M236 118 V156" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity=".9"/>
+        <g class="hero-scan">
+          <rect x="146" y="150" width="228" height="30" fill="#34B36B" opacity=".18"/>
+          <rect x="146" y="148" width="228" height="4" rx="2" fill="#34B36B"/>
+        </g>
+        <path d="M398 92 Q400 106 414 108 Q400 110 398 124 Q396 110 382 108 Q396 106 398 92 Z" fill="#1F7A4D"/>
+        <path d="M112 300 Q113.5 309 123 311 Q113.5 313 112 322 Q110.5 313 101 311 Q110.5 309 112 300 Z" fill="#34B36B"/>
+        <rect x="30" y="340" width="58" height="100" rx="9" fill="#E8EDEA" stroke="#14432F" stroke-width="3"/>
+        <ellipse cx="59" cy="340" rx="29" ry="7" fill="#F4F6F5" stroke="#14432F" stroke-width="3"/>
+        <rect x="31.5" y="372" width="55" height="34" fill="#1F7A4D"/>
+        <circle cx="59" cy="389" r="8" fill="#ffffff"/>
+        <path d="M112 337 H128 V354 Q140 362 140 378 V432 Q140 440 132 440 H108 Q100 440 100 432 V378 Q100 362 112 354 Z" fill="#7BCB8E" stroke="#14432F" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M110 384 V420" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+        <!-- ถังตามสีมาตรฐานไทย: เขียว อินทรีย์ / เหลือง รีไซเคิล / น้ำเงิน ทั่วไป -->
+        <rect x="166" y="366" width="60" height="9" rx="4.5" fill="#14432F"/>
+        <path d="M172 375 H220 L216 440 H176 Z" fill="#1F7A4D"/>
+        <path d="M196 394 C208 394 214 402 212 413 C201 414 192 408 192 399 Z" fill="#ffffff" opacity=".95"/>
+        <rect x="228" y="366" width="60" height="9" rx="4.5" fill="#14432F"/>
+        <path d="M234 375 H282 L278 440 H238 Z" fill="#E0A81E"/>
+        <path d="M250 405 A9 9 0 0 1 266 398" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M266 412 A9 9 0 0 1 250 419" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <rect x="290" y="366" width="60" height="9" rx="4.5" fill="#14432F"/>
+        <path d="M296 375 H344 L340 440 H300 Z" fill="#2F5E9E"/>
+        <path d="M312 398 V424 M320 398 V424 M328 398 V424" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+        <path d="M376 374 L388 358 H468 L480 374 Z" fill="#EBD3AE" stroke="#14432F" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="376" y="374" width="104" height="66" fill="#D9B98A" stroke="#14432F" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="416" y="374" width="24" height="66" fill="#EBD3AE"/>
+        <rect x="376" y="374" width="104" height="66" fill="none" stroke="#14432F" stroke-width="3" stroke-linejoin="round"/>
+      </svg>
+      <div class="float-card float-a">
+        <span style="width:34px;height:34px;border-radius:12px;background:var(--green-100);color:var(--green-700);display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></span>
+        <span style="display:flex;flex-direction:column;line-height:1.35"><span class="t1" style="color:var(--ink)">ขวดพลาสติก</span><span class="t2" style="color:var(--muted)">ขยะรีไซเคิล · ขายได้</span></span>
+      </div>
+      <div class="float-card float-b">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#7BCB8E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+        <span style="display:flex;flex-direction:column;line-height:1.35"><span class="t1">ทิ้งถังไหนดี</span><span class="t2" style="color:#CFE8D8">5 ประเภทขยะ · 13 ชนิด</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ UPLOAD ============ -->
+<section id="upload" class="section" style="background:var(--white);padding-bottom:80px">
+  <div class="container narrow" style="display:flex;flex-direction:column;gap:32px">
+    <div class="section-head">
+      <span class="eyebrow">AI WASTE SCANNER</span>
+      <h2 class="h2">เริ่มตรวจสอบขยะของคุณ</h2>
+      <p class="lead">ถ่ายขยะ 1 ชิ้นให้เห็นชัดเจน แล้วอัปโหลดเพื่อให้ AI วิเคราะห์</p>
+    </div>
+
+    <div class="drop" id="drop">
+      <div class="drop-empty" id="dropEmpty">
+        <div class="drop-icon"><svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg></div>
+        <h3>อัปโหลดรูปขยะของคุณ</h3>
+        <p style="font-size:16px">ลากรูปมาวางตรงนี้ หรือกดปุ่มเพื่อเลือกไฟล์</p>
+        <label class="btn btn-primary btn-md filebtn">
+          <input class="vh" id="pick1" type="file" accept="image/png,image/jpeg">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+          เลือกรูปภาพ
+        </label>
+        <p style="font-size:14px;color:var(--muted)">รองรับ JPG, PNG ไม่เกิน 10 MB</p>
+        <div class="tips" aria-label="วิธีถ่ายให้ AI ทายแม่น">
+          <span class="tip">ขยะ 1 ชิ้นต่อรูป</span><span class="tip">พื้นหลังเรียบ</span><span class="tip">แสงพอ เห็นชัด</span>
+        </div>
+      </div>
+      <div class="preview" id="preview" hidden>
+        <div class="preview-frame">
+          <img id="previewImg" alt="ตัวอย่างรูปขยะที่อัปโหลด">
+          <div class="scan-overlay" id="scan" hidden><div class="scan-line"></div></div>
+        </div>
+        <p class="fname" id="fileName"></p>
+      </div>
+    </div>
+
+    <div class="upload-actions">
+      <p class="alert" id="error" role="alert" hidden>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        <span id="errorText"></span>
+      </p>
+      <div class="analyzing" id="analyzing" role="status" aria-live="polite" hidden>
+        <svg class="spin" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#1F7A4D" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>
+        AI กำลังวิเคราะห์ขยะของคุณ...
+      </div>
+      <div class="row-wrap" id="actions">
+        <label class="btn btn-ghost btn-md filebtn" id="changeBtn" hidden>
+          <input class="vh" id="pick2" type="file" accept="image/png,image/jpeg">
+          เปลี่ยนรูป
+        </label>
+        <button class="btn btn-primary btn-lg" id="analyzeBtn" type="button">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>
+          วิเคราะห์ด้วย AI
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESULT ============ -->
+<section id="result" class="section result-sec">
+  <div class="container result-wrap">
+    <div class="section-head" style="gap:14px">
+      <span class="eyebrow">ANALYSIS RESULT</span>
+      <h2 class="h2">ผลการวิเคราะห์</h2>
+      <p class="status-chip" id="doneChip" role="status" hidden>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+        <span id="doneText"></span>
+      </p>
+      <span class="mode-badge" id="fakeBadge" hidden>โหมดทดสอบ: server ยังไม่ได้โหลดโมเดลจริง ผลเป็นการสุ่ม</span>
+      <div id="demoBox" hidden style="display:flex;flex-direction:column;align-items:center;gap:12px">
+        <div class="tabs" role="group" aria-label="เลือกดูตัวอย่างผลลัพธ์" id="tabs"></div>
+        <p class="demo-note">โหมดสาธิต: ไม่ได้เชื่อมต่อ server ผลลัพธ์ที่แสดงเป็นข้อมูลตัวอย่าง ยังไม่ได้มาจากโมเดล AI จริง</p>
+      </div>
+    </div>
+    <div id="resultBody">
+      <div class="empty-result">
+        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#7BCB8E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg>
+        <h3>ยังไม่มีผลการวิเคราะห์</h3>
+        <p>อัปโหลดรูปขยะแล้วกด "วิเคราะห์ด้วย AI" ผลจะแสดงที่นี่</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how" class="section" style="background:var(--white)">
+  <div class="container" style="display:flex;flex-direction:column;gap:44px">
+    <div class="section-head"><span class="eyebrow">HOW IT WORKS</span><h2 class="h2">ใช้งานง่ายใน 4 ขั้นตอน</h2></div>
+    <ol class="grid-4">
+      <li class="how-card lift"><span class="how-top"><span class="how-ic"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span><span class="how-n">1</span></span><h3>อัปโหลดรูป</h3><p>อัปโหลดรูปขยะ 1 ชิ้น</p></li>
+      <li class="how-card lift"><span class="how-top"><span class="how-ic"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg></span><span class="how-n">2</span></span><h3>AI วิเคราะห์</h3><p>AI ระบุวัสดุและประเภทของขยะ</p></li>
+      <li class="how-card lift"><span class="how-top"><span class="how-ic"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M14.5 9a2.5 2 0 0 0-2.5-1.5c-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2A2.5 2 0 0 1 9.5 15"/><path d="M12 6v1.5"/><path d="M12 16.5V18"/></svg></span><span class="how-n">3</span></span><h3>ดูมูลค่า</h3><p>ตรวจสอบว่าขายได้ไหม และดูราคาโดยประมาณ</p></li>
+      <li class="how-card lift"><span class="how-top"><span class="how-ic"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 14l2 2 4-4"/></svg></span><span class="how-n">4</span></span><h3>จัดการให้ถูกต้อง</h3><p>ทำตามคำแนะนำสำหรับการขาย รีไซเคิล หรือทิ้ง</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ WASTE GUIDE ============ -->
+<section id="guide" class="section guide-sec">
+  <div class="container" style="display:flex;flex-direction:column;gap:44px">
+    <div class="section-head">
+      <span class="eyebrow">WASTE GUIDE</span>
+      <h2 class="h2">ประเภทขยะที่รองรับ</h2>
+      <p class="lead">AI รู้จักขยะ 13 ชนิด แบ่งเป็น 5 ประเภทตามถังที่ควรทิ้ง</p>
+    </div>
+    <ul class="guide-grid" id="guideGrid"></ul>
+  </div>
+</section>
+
+<!-- ============ IMPACT ============ -->
+<section id="about" class="section impact">
+  <div class="container" style="display:flex;flex-direction:column;gap:44px">
+    <div class="section-head" style="gap:14px"><span class="eyebrow">ENVIRONMENTAL IMPACT</span><h2 class="h2">แยกให้ถูก เพิ่มมูลค่า ลดขยะ</h2></div>
+    <ul class="impact-grid">
+      <li><span class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.4 5.7-7.2 2.2-1 4.3-1.3 4.3-1.3"/></svg></span><p>เพิ่มโอกาสนำขยะกลับมารีไซเคิล</p></li>
+      <li><span class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span><p>ลดการปนเปื้อนของขยะรีไซเคิล</p></li>
+      <li><span class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M14.5 9a2.5 2 0 0 0-2.5-1.5c-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2A2.5 2 0 0 1 9.5 15"/><path d="M12 6v1.5"/><path d="M12 16.5V18"/></svg></span><p>ช่วยให้ผู้ใช้เห็นมูลค่าของวัสดุที่กำลังจะทิ้ง</p></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container" style="display:flex;flex-direction:column;gap:36px">
+    <div class="foot-row">
+      <div style="display:flex;flex-direction:column;gap:12px;max-width:380px">
+        <a class="brand" href="#top"><span class="brand-mark"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.4 5.7-7.2 2.2-1 4.3-1.3 4.3-1.3"/></svg></span><span class="brand-name">WasteValue <span>AI</span></span></a>
+        <p style="font-size:15px;line-height:1.7">AI-powered Waste Classification &amp; Recycling Assistant</p>
+      </div>
+      <nav aria-label="เมนูท้ายหน้า" style="display:flex;flex-wrap:wrap;gap:4px 28px">
+        <a class="nav-link" href="#top">Home</a><a class="nav-link" href="#how">How It Works</a><a class="nav-link" href="#guide">Waste Guide</a><a class="nav-link" href="#about">About</a>
+      </nav>
+    </div>
+    <p class="foot-note">
+      <svg viewBox="0 0 24 24" width="18" height="18" style="flex:none;margin-top:3px" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      โปรเจกต์นี้จัดทำเพื่อการศึกษา ผลจาก AI อาจผิดพลาดได้ ราคาขยะเป็นข้อมูลประมาณการจากแหล่งที่ระบุ ไม่ใช่ราคารับซื้อที่รับประกัน
+    </p>
+  </div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  const API = "/api";
+  const MAX_BYTES = 10 * 1024 * 1024;
+
+  // ---------- ข้อมูลประเภทขยะ (ตรงกับ data/categories.json) ----------
+  const CATEGORY_UI = {
+    recyclable: { th: "ขยะรีไซเคิล", en: "Recyclable", bin: "#E0A81E", binName: "ถังขยะรีไซเคิล (สีเหลือง)", tile: "#EAF6EE", tileFg: "#1F7A4D", icon: "recycle",
+      examples: "กระดาษ กล่องกระดาษ กระป๋องและโลหะ พลาสติก ขวดแก้วใส สีชา สีเขียว",
+      classes: ["กระดาษ", "กล่องกระดาษ", "โลหะ / กระป๋อง", "พลาสติก", "แก้วใส", "แก้วสีชา", "แก้วสีเขียว"] },
+    organic: { th: "ขยะอินทรีย์", en: "Organic", bin: "#1F7A4D", binName: "ถังขยะอินทรีย์ (สีเขียว)", tile: "#EEF3DA", tileFg: "#4C6B1F", icon: "leaf",
+      examples: "เศษอาหาร เปลือกผลไม้ เศษผัก", classes: ["ขยะอินทรีย์ / เศษอาหาร"] },
+    general: { th: "ขยะทั่วไป", en: "General Waste", bin: "#2F5E9E", binName: "ถังขยะทั่วไป (สีน้ำเงิน)", tile: "#ECEFED", tileFg: "#4B5750", icon: "trash",
+      examples: "เสื้อผ้า รองเท้า ของใช้ที่รีไซเคิลไม่ได้ เช่น แปรงสีฟัน", classes: ["เสื้อผ้า", "รองเท้า", "ขยะทั่วไปอื่นๆ"] },
+    hazardous: { th: "ขยะอันตราย", en: "Hazardous Waste", bin: "#C0392B", binName: "ถังขยะอันตราย (สีแดง)", tile: "#FFEBD3", tileFg: "#B8430A", icon: "alert", warn: true,
+      examples: "แบตเตอรี่ ถ่านไฟฉาย", classes: ["แบตเตอรี่ / ถ่านไฟฉาย"],
+      warnTitle: "ห้ามทิ้งรวมกับขยะทั่วไป", warnText: "ขยะอันตรายต้องแยกทิ้งและส่งไปจุดรับที่เหมาะสม" },
+    infectious: { th: "ขยะติดเชื้อ", en: "Infectious Waste", bin: "#B8430A", binName: "ถุงแยกสำหรับขยะติดเชื้อ", tile: "#FFEBD3", tileFg: "#B8430A", icon: "bio", warn: true,
+      examples: "หน้ากากอนามัย ผ้าอนามัย ผ้าอ้อมสำเร็จรูป", classes: ["ขยะติดเชื้อ"],
+      warnTitle: "ห้ามปนกับขยะรีไซเคิล", warnText: "ห่อให้มิดชิด ใส่ถุงแยกปิดสนิท และเขียนหน้าถุงว่าขยะติดเชื้อ" }
+  };
+  const GUIDE_ORDER = ["recyclable", "organic", "general", "hazardous", "infectious"];
+
+  // ---------- ไอคอน ----------
+  const P = {
+    bottle: '<path d="M9.5 2h5v2h-5z"/><path d="M9.5 4h5l2.5 3v13a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V7z"/><path d="M7 12h10"/>',
+    glass: '<path d="M10 2h4v6c0 1 2.5 2.5 2.5 4.5V20a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-7.5C7.5 10.5 10 9 10 8z"/><path d="M7.5 15h9"/>',
+    can: '<ellipse cx="12" cy="5.5" rx="6" ry="2.5"/><path d="M6 5.5v13c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-13"/><path d="M6 12c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5"/>',
+    paper: '<path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/>',
+    box: '<path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/>',
+    leaf: '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.4 5.7-7.2 2.2-1 4.3-1.3 4.3-1.3"/>',
+    battery: '<rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 11v2"/><path d="M6 11v2"/><path d="M10 11v2"/>',
+    shirt: '<path d="M20.4 6.6L16 4a4 4 0 0 1-8 0L3.6 6.6a1 1 0 0 0-.5 1.2l1.2 3.6a1 1 0 0 0 1.2.6L7 11.5V20a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-8.5l1.5.5a1 1 0 0 0 1.2-.6l1.2-3.6a1 1 0 0 0-.5-1.2z"/>',
+    shoe: '<path d="M3 16v-5a2 2 0 0 1 2-2h3l2 3 5 1.5a5 5 0 0 1 4 3.5H3z"/><path d="M3 16v2a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-2"/><path d="M10 12l1-1.5"/><path d="M13 13l1-1.5"/>',
+    trash: '<path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>',
+    bio: '<path d="M4 9c0-1 1-2 2-2h12c1 0 2 1 2 2v3c0 3-3.5 5-8 5s-8-2-8-5z"/><path d="M4 10H2"/><path d="M20 10h2"/><path d="M8 11h8"/><path d="M8 14h8"/>',
+    alert: '<path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+    recycle: '<path d="M7 19H4.8a1.8 1.8 0 0 1-1.6-2.7L7.2 9.6"/><path d="M11 19h8.2a1.8 1.8 0 0 0 1.6-2.7L19.4 14"/><path d="M14 16l-3 3 3 3"/><path d="M8.3 13.6L7.2 9.6l-4 1.1"/><path d="M9.3 5.4l1.1-1.9a1.8 1.8 0 0 1 3.1 0l3.8 6.7"/><path d="M13.4 9.3l4-1.1 1.1 4"/>',
+    question: '<circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+    check: '<circle cx="12" cy="12" r="10"/><path d="M8 12.5l3 3 5-6"/>',
+    cross: '<circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6"/><path d="M9 9l6 6"/>',
+    tag: '<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7" cy="7" r="1.2"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+    cal: '<path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>',
+    spark: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>',
+    heart: '<path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/>'
+  };
+  const CLASS_ICON = { plastic: "bottle", "white-glass": "glass", "brown-glass": "glass", "green-glass": "glass", metal: "can",
+    paper: "paper", cardboard: "box", biological: "leaf", battery: "battery", clothes: "shirt", shoes: "shoe",
+    trash_general: "trash", trash_infectious: "bio" };
+  function svg(name, size, stroke, extra) {
+    return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" fill="none" stroke="' + (stroke || "currentColor") +
+      '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"' + (extra || "") + '>' + P[name] + '</svg>';
+  }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+  function pct(x) { return Math.round((x || 0) * 100) + "%"; }
+  function binSvg(color, label) {
+    return '<svg viewBox="0 0 64 64" width="96" height="96" role="img" aria-label="' + esc(label) + '" style="flex:none">' +
+      '<rect x="26" y="5" width="12" height="7" rx="3.5" fill="#14432F"/><rect x="9" y="11" width="46" height="8" rx="4" fill="#14432F"/>' +
+      '<path d="M14 21 H50 L47 56 A3 3 0 0 1 44 59 H20 A3 3 0 0 1 17 56 Z" fill="' + color + '"/>' +
+      '<path d="M25 33 V49 M32 33 V49 M39 33 V49" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" opacity=".9"/></svg>';
+  }
+
+  // ---------- ตัวอย่างสำหรับโหมดสาธิต (ข้อความตรงกับ data/waste_info.json) ----------
+  const DEMO = [
+    { tab: "พลาสติก · ขายได้", r: { class: "plastic", label_th: "พลาสติก", confidence: 0.93, uncertain: false,
+      runner_up: { class: "white-glass", label_th: "ขวดแก้วใส", confidence: 0.04 }, category: "recyclable", category_th: "ขยะรีไซเคิล",
+      bin: "ถังขยะรีไซเคิล (สีเหลือง)", material: "พลาสติก", sellable: true, price_min: 8, price_max: 12, price_unit: "บาท/กก.",
+      price_source: "ตัวเลขตัวอย่างจากดีไซน์ ไม่ใช่ราคาจริง", price_date: null,
+      prep_steps: ["เทของเหลวออกให้หมด", "ล้างให้สะอาด", "ตากให้แห้ง", "แยกฝาและฉลากออกถ้าร้านรับซื้อแยกประเภท"],
+      disposal: "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล", warning: null } },
+    { tab: "รองเท้า · ขยะทั่วไป", r: { class: "shoes", label_th: "รองเท้า", confidence: 0.71, uncertain: false,
+      runner_up: { class: "clothes", label_th: "เสื้อผ้า", confidence: 0.18 }, category: "general", category_th: "ขยะทั่วไป",
+      bin: "ถังขยะทั่วไป (สีน้ำเงิน)", material: null, sellable: false, price_min: null, price_max: null,
+      prep_steps: ["ถ้ายังใส่ได้ ให้บริจาค", "ทำความสะอาดก่อนบริจาค"], disposal: "ถ้าใช้ต่อไม่ได้ ทิ้งในถังขยะทั่วไป", warning: null } },
+    { tab: "เศษอาหาร · อินทรีย์", r: { class: "biological", label_th: "ขยะอินทรีย์ / เศษอาหาร", confidence: 0.95, uncertain: false,
+      runner_up: { class: "paper", label_th: "กระดาษ", confidence: 0.02 }, category: "organic", category_th: "ขยะอินทรีย์",
+      bin: "ถังขยะอินทรีย์ (สีเขียว)", material: null, sellable: false, price_min: null, price_max: null,
+      prep_steps: ["แยกออกจากถุงพลาสติกและภาชนะ", "สะเด็ดน้ำออกก่อนทิ้ง", "นำไปทำปุ๋ยหมักได้ถ้ามีพื้นที่"], disposal: "ทิ้งในถังขยะอินทรีย์", warning: null } },
+    { tab: "ถ่านไฟฉาย · อันตราย", r: { class: "battery", label_th: "แบตเตอรี่ / ถ่านไฟฉาย", confidence: 0.91, uncertain: false,
+      runner_up: { class: "metal", label_th: "โลหะ / กระป๋อง", confidence: 0.05 }, category: "hazardous", category_th: "ขยะอันตราย",
+      bin: "ถังขยะอันตราย (สีแดง) หรือจุดรับขยะอันตรายของชุมชน", material: null, sellable: false, price_min: null, price_max: null,
+      prep_steps: ["ห้ามแกะ เจาะ หรือเผา", "พันขั้วด้วยเทปถ้ามีขั้วโลหะโผล่", "แยกเก็บในกล่องหรือถุงของตัวเอง"],
+      disposal: "นำไปทิ้งที่จุดรับขยะอันตราย", warning: "ห้ามทิ้งรวมกับขยะทั่วไป ขยะอันตรายต้องแยกทิ้งและส่งไปจุดรับที่เหมาะสม" } },
+    { tab: "หน้ากากอนามัย · ติดเชื้อ", r: { class: "trash_infectious", label_th: "ขยะติดเชื้อ", confidence: 0.86, uncertain: false,
+      runner_up: { class: "trash_general", label_th: "ขยะทั่วไป", confidence: 0.09 }, category: "infectious", category_th: "ขยะติดเชื้อ",
+      bin: "ใส่ถุงแยกปิดสนิท เขียนหน้าถุงว่าขยะติดเชื้อ แล้วทิ้งตามจุดที่ท้องถิ่นกำหนด", material: null, sellable: false, price_min: null, price_max: null,
+      prep_steps: ["ม้วนหรือห่อให้มิดชิด", "ใส่ถุงแยกและปิดปากถุงให้สนิท", "เขียนหน้าถุงว่า \"ขยะติดเชื้อ\"", "ล้างมือหลังจับ"],
+      disposal: "ทิ้งแยกตามจุดที่ท้องถิ่นกำหนด ห้ามปนกับขยะรีไซเคิล", warning: "ห้ามปนกับขยะรีไซเคิล ต้องห่อและแยกถุงให้มิดชิด" } },
+    { tab: "AI ไม่แน่ใจ", r: { class: "white-glass", label_th: "ขวดแก้วใส", confidence: 0.42, uncertain: true,
+      runner_up: { class: "plastic", label_th: "พลาสติก", confidence: 0.37 }, category: "recyclable", category_th: "ขยะรีไซเคิล",
+      bin: "ถังขยะรีไซเคิล (สีเหลือง)", material: "แก้วใส", sellable: true, price_min: null, price_max: null, prep_steps: [], disposal: "", warning: null } }
+  ];
+
+  // ---------- สถานะ ----------
+  const $ = (id) => document.getElementById(id);
+  let file = null, previewUrl = "", demoMode = false, demoIdx = 0, runs = 0, current = null, weight = "1";
+
+  function setError(msg) { $("errorText").textContent = msg || ""; $("error").hidden = !msg; }
+
+  function setFile(f) {
+    if (!f) return;
+    if (!/^image\/(jpeg|png)$/.test(f.type)) { setError("รองรับเฉพาะไฟล์ JPG และ PNG เท่านั้น"); return; }
+    if (f.size > MAX_BYTES) { setError("ไฟล์ใหญ่เกิน 10 MB กรุณาเลือกรูปที่เล็กลง"); return; }
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    file = f; previewUrl = URL.createObjectURL(f);
+    $("previewImg").src = previewUrl; $("fileName").textContent = f.name;
+    $("dropEmpty").hidden = true; $("preview").hidden = false; $("changeBtn").hidden = false;
+    setError("");
+  }
+  ["pick1", "pick2"].forEach((id) => $(id).addEventListener("change", (e) => { setFile(e.target.files && e.target.files[0]); e.target.value = ""; }));
+  const drop = $("drop");
+  drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("dragging"); });
+  drop.addEventListener("dragleave", () => drop.classList.remove("dragging"));
+  drop.addEventListener("drop", (e) => { e.preventDefault(); drop.classList.remove("dragging"); setFile(e.dataTransfer && e.dataTransfer.files[0]); });
+
+  function busy(on) {
+    $("analyzing").hidden = !on; $("actions").hidden = on; $("scan").hidden = !on;
+  }
+
+  async function analyze() {
+    if (!file) { setError("กรุณาอัปโหลดรูปขยะก่อนกดวิเคราะห์"); return; }
+    setError(""); busy(true);
+    try {
+      let data;
+      if (demoMode) {
+        await new Promise((r) => setTimeout(r, 1600));
+        demoIdx = runs % DEMO.length; data = DEMO[demoIdx].r;
+      } else {
+        const fd = new FormData(); fd.append("file", file);
+        const res = await fetch(API + "/predict", { method: "POST", body: fd });
+        let body = null; try { body = await res.json(); } catch (e) { body = null; }
+        if (!res.ok) throw new Error((body && body.error) || "วิเคราะห์ไม่สำเร็จ ลองใหม่อีกครั้ง");
+        data = body;
+      }
+      runs++;
+      $("doneText").textContent = "วิเคราะห์รูป " + file.name + " เสร็จแล้ว";
+      $("doneChip").hidden = false;
+      show(data, true);
+      $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (err) {
+      setError(err && err.message && !/fetch|network/i.test(err.message) ? err.message
+        : "เชื่อมต่อ server ไม่ได้ ตรวจว่ารัน uvicorn อยู่ แล้วลองใหม่");
+    } finally { busy(false); }
+  }
+  $("analyzeBtn").addEventListener("click", analyze);
+
+  // ---------- วาดผลลัพธ์ ----------
+  function show(r, withImage) {
+    current = r;
+    $("fakeBadge").hidden = !r.fake_model;
+    if (demoMode) renderTabs();
+    $("resultBody").innerHTML = r.uncertain ? uncertainHtml(r) : resultHtml(r, withImage);
+    const w = $("weight");
+    if (w) { w.value = weight; w.addEventListener("input", (e) => { weight = e.target.value; updateValue(); }); updateValue(); }
+    const again = $("againBtn");
+    if (again) again.addEventListener("click", () => $("upload").scrollIntoView({ behavior: "smooth" }));
+  }
+
+  function identTile(r, withImage, cat) {
+    const ui = CATEGORY_UI[cat];
+    if (withImage && previewUrl) return '<div class="ident-tile"><img src="' + previewUrl + '" alt="รูปที่อัปโหลด"></div>';
+    return '<div class="ident-tile" style="background:' + ui.tile + ';color:' + ui.tileFg + '">' + svg(CLASS_ICON[r.class] || "trash", 44) + '</div>';
+  }
+
+  function confHtml(r) {
+    let h = '<div class="conf"><p>' + svg("spark", 14) + ' AI มั่นใจ ' + pct(r.confidence) + '</p>' +
+      '<div class="bar"><i style="width:' + pct(r.confidence) + '"></i></div></div>';
+    if (r.runner_up && r.confidence < 0.8) h += '<p class="runner">อาจเป็น <b>' + esc(r.runner_up.label_th) + '</b> (' + pct(r.runner_up.confidence) + ')</p>';
+    return h;
+  }
+
+  function resultHtml(r, withImage) {
+    const cat = CATEGORY_UI[r.category] ? r.category : "general";
+    const ui = CATEGORY_UI[cat];
+    const warn = !!ui.warn;
+    const tiles = (r.material ? '<div class="tile"><p class="k">วัสดุ</p><p class="v">' + esc(r.material) + '</p></div>' : '') +
+      '<div class="tile' + (warn ? ' warn' : '') + '"><p class="k">ประเภทขยะ</p><p class="v">' + esc(r.category_th || ui.th) + '</p></div>';
+    const pill = r.sellable
+      ? '<div class="pill sell">' + svg("check", 34, "#1F7A4D") + 'ขายได้</div>'
+      : '<div class="pill nosell">' + svg("cross", 34, "#5B6A62") + 'ขายไม่ได้</div>';
+
+    const left = '<div class="col"><div class="ident">' + identTile(r, withImage, cat) +
+      '<div style="display:flex;flex-direction:column;gap:2px"><small>ตรวจพบ</small><h3>' + esc(r.label_th) + '</h3></div></div>' +
+      (warn ? '' : pill) + '<div class="tiles">' + tiles + '</div>' + confHtml(r) + '</div>';
+
+    let right;
+    if (r.sellable) {
+      const hasPrice = r.price_min != null && r.price_max != null;
+      right = '<div class="panel green"><div style="display:flex;flex-direction:column;gap:4px"><p class="panel-label">' + svg("tag", 20) + ' ราคารับซื้อโดยประมาณ</p>' +
+        (hasPrice ? '<p class="price">' + fmt(r.price_min) + '–' + fmt(r.price_max) + ' <span>' + esc(r.price_unit || "บาท/กก.") + '</span></p>'
+                  : '<p class="price na">ยังไม่มีข้อมูลราคา</p>') + '</div>' +
+        (hasPrice ? '<div class="weight"><label for="weight">น้ำหนักโดยประมาณ (กก.)</label><div class="weight-box">' +
+          '<input id="weight" type="number" inputmode="decimal" min="0" max="100000" step="0.1"><span>กก.</span></div></div>' +
+          '<div class="value" role="status" aria-live="polite"><p class="k">มูลค่าโดยประมาณ</p><p class="v"><b id="valueRange" style="font-weight:inherit">—</b> <span>บาท</span></p></div>' : '') +
+        '<div class="notes"><p>' + svg("info", 18, null, ' style="flex:none;margin-top:2px"') + 'ราคาจริงขึ้นกับความสะอาดของขยะ ร้านรับซื้อ และช่วงเวลา</p>' +
+        (r.price_source ? '<p class="muted">' + svg("cal", 18) + 'แหล่งราคา: ' + esc(r.price_source) + (r.price_date ? ' · ' + esc(r.price_date) : '') + '</p>' : '') + '</div></div>';
+    } else if (warn) {
+      right = '<div class="panel warn"><h4 class="wv-display" style="font-size:22px;line-height:1.4;font-weight:600;color:var(--warn-text)">ราคารับซื้อ</h4>' +
+        '<div style="display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center"><span class="pill nosell" style="font-size:16px;padding:6px 16px 6px 10px;gap:8px">' + svg("cross", 22, "#5B6A62") + 'ขายไม่ได้</span>' +
+        '<span style="font-size:15px">ไม่มีราคารับซื้อทั่วไป</span></div>' +
+        '<p style="font-size:15px;line-height:1.7;color:var(--warn-deep)">' + esc(r.disposal) + '</p></div>';
+    } else {
+      right = '<div class="panel gray"><p class="panel-label" style="color:var(--gray-text)">' + svg("tag", 20) + ' ราคารับซื้อ</p>' +
+        '<p class="na-title">ไม่มีราคารับซื้อทั่วไป</p><p style="font-size:15px;line-height:1.7">' +
+        (cat === "organic" ? "ขยะอินทรีย์ไม่มีราคารับซื้อ แต่นำไปทำปุ๋ยหมักหรือน้ำหมักชีวภาพได้" :
+         /clothes|shoes/.test(r.class) ? "ร้านรับซื้อของเก่าส่วนใหญ่ไม่รับซื้อตามน้ำหนัก ถ้ายังใช้ได้ การบริจาคช่วยให้ของมีประโยชน์ต่อ" :
+         "รีไซเคิลได้ยาก ร้านรับซื้อส่วนใหญ่จึงไม่รับซื้อ") + '</p></div>';
+    }
+
+    const head = warn ? '<div class="warn-head" role="alert"><span class="ic">' + svg("alert", 36) + '</span><div class="tx"><p class="t1">' +
+      esc(ui.warnTitle) + '</p><p class="t2">' + esc(ui.warnText) + '</p></div></div>' : '';
+    const main = '<article class="card' + (warn ? ' warn' : '') + '">' + head + '<div class="main-grid">' + left + right + '</div></article>';
+
+    const steps = (r.prep_steps || []).map((s, i) => '<li><span class="n">' + (i + 1) + '</span><span class="s">' + esc(s) + '</span></li>').join("");
+    const stepsCard = steps ? '<article class="sub-card' + (warn ? ' warn' : '') + '"><h3>' + (r.sellable ? 'คำแนะนำก่อนขาย' : 'คำแนะนำ') + '</h3><ol class="steps">' + steps + '</ol></article>' : '';
+    const binCard = '<article class="sub-card"><h3>' + (r.sellable ? 'หากไม่ขาย ควรทิ้งอย่างไร' : 'ควรทิ้งอย่างไร') + '</h3>' +
+      '<div class="bin-box" style="background:' + (warn ? 'var(--warn-bg)' : '#EAF6EE') + '">' + binSvg(ui.bin, ui.binName) +
+      '<div class="tx"><p class="t1"' + (warn ? ' style="color:var(--warn-text)"' : '') + '>' + esc(r.bin || ui.binName) + '</p><p class="t2">' + esc(r.disposal) + '</p></div></div></article>';
+
+    return '<div style="display:flex;flex-direction:column;gap:28px">' + main + '<div class="lower">' + stepsCard + binCard + '</div></div>';
+  }
+
+  function uncertainHtml(r) {
+    const guesses = [r, r.runner_up].filter(Boolean).map((g) => '<div class="guess"><b>' + esc(g.label_th) + '</b><span>' + pct(g.confidence) + '</span></div>').join("");
+    return '<article class="card"><div class="main-grid"><div class="col"><div class="ident"><div class="ident-tile" style="background:var(--gray-bg);color:var(--gray-text)">' + svg("question", 44) + '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:2px"><small>ผลการตรวจ</small><h3>AI ยังไม่แน่ใจ</h3></div></div>' +
+      '<p style="font-size:16px;line-height:1.7">ความมั่นใจต่ำเกินไปที่จะบอกได้แน่ชัด ระบบจึงไม่ฟันธง เพื่อไม่ให้แนะนำวิธีทิ้งผิด ใกล้เคียงที่สุดคือ:</p>' +
+      '<div style="display:flex;flex-direction:column;gap:10px">' + guesses + '</div></div>' +
+      '<div class="panel gray" style="justify-content:flex-start"><h4 class="wv-display" style="font-size:22px;font-weight:600;color:var(--ink)">ลองถ่ายใหม่ให้ AI เห็นชัดขึ้น</h4>' +
+      '<ul class="uncertain-tips"><li>ถ่ายขยะ 1 ชิ้นต่อรูป</li><li>วางบนพื้นหลังเรียบ</li><li>แสงพอ ไม่ย้อนแสง</li><li>ให้เห็นทั้งชิ้น</li></ul>' +
+      '<button class="btn btn-primary btn-md" id="againBtn" type="button" style="align-self:flex-start">ถ่ายหรือเลือกรูปใหม่</button></div></div></article>';
+  }
+
+  function fmt(v) { return String(Math.round(v * 10) / 10); }
+  function updateValue() {
+    const el = $("valueRange"); if (!el || !current) return;
+    const w = parseFloat(weight);
+    el.textContent = isFinite(w) && w > 0 ? fmt(w * current.price_min) + "–" + fmt(w * current.price_max) : "—";
+  }
+
+  // ---------- โหมดสาธิต ----------
+  function renderTabs() {
+    const t = $("tabs"); t.textContent = "";
+    DEMO.forEach((d, i) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "tab"; b.textContent = d.tab;
+      b.setAttribute("aria-pressed", String(current === d.r));
+      b.addEventListener("click", () => { demoIdx = i; show(d.r, false); });
+      t.appendChild(b);
+    });
+  }
+  function enterDemo() {
+    demoMode = true; $("demoBox").hidden = false;
+    show(DEMO[0].r, false);
+  }
+
+  // ---------- Waste Guide ----------
+  $("guideGrid").innerHTML = GUIDE_ORDER.map((k) => {
+    const c = CATEGORY_UI[k];
+    return '<li class="guide-card lift' + (c.warn ? ' warn' : '') + '"><div class="guide-head"><span class="guide-ic" style="background:' + c.tile + ';color:' + c.tileFg + '">' + svg(c.icon, 30) + '</span>' +
+      '<div><h3>' + c.th + '</h3><p class="en">' + c.en + '</p></div></div>' +
+      '<p style="font-size:14.5px;line-height:1.65">' + esc(c.examples) + '</p>' +
+      '<p class="bin-line"><span class="dot" style="background:' + c.bin + '"></span>' + esc(c.binName) + '</p>' +
+      '<div class="chips" aria-label="ชนิดที่ AI รู้จัก">' + c.classes.map((x) => '<span>' + esc(x) + '</span>').join("") + '</div></li>';
+  }).join("");
+
+  // ---------- เมนูมือถือ ----------
+  $("burger").addEventListener("click", () => {
+    const m = $("mobileMenu"), open = m.hidden; m.hidden = !open; $("burger").setAttribute("aria-expanded", String(open));
+  });
+  $("mobileMenu").addEventListener("click", (e) => { if (e.target.closest("a")) { $("mobileMenu").hidden = true; $("burger").setAttribute("aria-expanded", "false"); } });
+
+  // ---------- เริ่มต้น: เช็ก server ----------
+  const forceDemo = /[?&]demo\b/.test(location.search);
+  if (forceDemo) { enterDemo(); return; }
+  const ctl = new AbortController(); const timer = setTimeout(() => ctl.abort(), 2500);
+  fetch(API + "/health", { signal: ctl.signal })
+    .then((res) => res.ok ? res.json() : Promise.reject())
+    .then((h) => { if (!h || !h.ok) enterDemo(); })
+    .catch(() => enterDemo())
+    .finally(() => clearTimeout(timer));
+})();
+</script>
+</body>
+</html>
