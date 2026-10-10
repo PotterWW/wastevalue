@@ -25,7 +25,7 @@ uvicorn server.main:app --port 8000
 | `docs/` | สเปก: SPEC, API, DATA, DESIGN, PLAN |
 
 ## ทีม
-ปาล์ม — เตรียมข้อมูล · แฟนต้า — โมเดลและประเมินผล · A — เว็บและ server
+ปาล์ม — เตรียมข้อมูล · แฟนต้า — โมเดลและประเมินผล · พอร์ต — เว็บและ server
 
 ## ข้อมูล
 Garbage Classification (12 classes) จาก Kaggle — ปรับเป็น 13 คลาสโดยแบ่ง trash เป็นขยะทั่วไปกับขยะติดเชื้อ
