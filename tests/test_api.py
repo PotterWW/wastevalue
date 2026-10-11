@@ -138,3 +138,4 @@ def test_demo_plastic_price_matches_data():
     html = (ROOT / "web" / "index.html").read_text(encoding="utf-8")
     assert f'price_min: {info["price_min"]}, price_max: {info["price_max"]}' in html
     assert info["price_source"] in html
+    assert f'price_date: "{info["price_date"]}"' in html

@@ -580,7 +580,7 @@ footer { background: var(--surface-2); padding-block: 56px 40px; }
     { tab: "พลาสติก · ขายได้", r: { class: "plastic", label_th: "พลาสติก", confidence: 0.93, uncertain: false,
       runner_up: { class: "white-glass", label_th: "ขวดแก้วใส", confidence: 0.04 }, category: "recyclable", category_th: "ขยะรีไซเคิล",
       bin: "ถังขยะรีไซเคิล (สีเหลือง)", material: "พลาสติก", sellable: true, price_min: 2.5, price_max: 9.5, price_unit: "บาท/กก.",
-      price_source: "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", price_date: null,
+      price_source: "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", price_date: "2026-10-12",
       prep_steps: ["เทของเหลวออกให้หมด", "ล้างให้สะอาด", "ตากให้แห้ง", "แยกฝาและฉลากออกถ้าร้านรับซื้อแยกประเภท"],
       disposal: "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล", warning: null } },
     { tab: "รองเท้า · ขยะทั่วไป", r: { class: "shoes", label_th: "รองเท้า", confidence: 0.71, uncertain: false,
@@ -729,7 +729,7 @@ footer { background: var(--surface-2); padding-block: 56px 40px; }
           '<input id="weight" type="number" inputmode="decimal" min="0" max="100000" step="0.1"><span>กก.</span></div></div>' +
           '<div class="value" role="status" aria-live="polite"><p class="k">มูลค่าโดยประมาณ</p><p class="v"><b id="valueRange" style="font-weight:inherit">—</b> <span>บาท</span></p></div>' : '') +
         '<div class="notes"><p>' + svg("info", 18, null, ' style="flex:none;margin-top:2px"') + 'ราคาจริงขึ้นกับความสะอาดของขยะ ร้านรับซื้อ และช่วงเวลา</p>' +
-        (r.price_source ? '<p class="muted">' + svg("cal", 18) + 'แหล่งราคา: ' + esc(r.price_source) + (r.price_date ? ' · ' + esc(r.price_date) : '') + '</p>' : '') + '</div></div>';
+        (r.price_source ? '<p class="muted">' + svg("cal", 18) + 'แหล่งราคา: ' + esc(r.price_source) + (r.price_date ? ' · ' + esc(thDate(r.price_date)) : '') + '</p>' : '') + '</div></div>';
     } else if (warn) {
       right = '<div class="panel warn"><h4 class="wv-display" style="font-size:22px;line-height:1.4;font-weight:600;color:var(--warn-text)">ราคารับซื้อ</h4>' +
         '<div style="display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center"><span class="pill nosell" style="font-size:16px;padding:6px 16px 6px 10px;gap:8px">' + svg("cross", 22, "#5B6A62") + 'ขายไม่ได้</span>' +
@@ -768,6 +768,7 @@ footer { background: var(--surface-2); padding-block: 56px 40px; }
   }
 
   function fmt(v) { return String(Math.round(v * 10) / 10); }
+  function thDate(d) { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d); return m ? m[3] + "/" + m[2] + "/" + m[1] : d; }
   function range(a, b) { return fmt(a) === fmt(b) ? fmt(a) : fmt(a) + "–" + fmt(b); }
   function updateValue() {
     const el = $("valueRange"); if (!el || !current) return;

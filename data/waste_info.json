@@ -1,5 +1,5 @@
 {
-  "_note": "ราคาต้องมาจากแหล่งจริงเท่านั้น ห้ามเดา: price_min/max คือช่วงราคารับซื้อ บาท/กก. ที่มาของแต่ละช่วงดู docs/DATA.md หัวข้อ ที่มาของราคา; price_date ว่างไว้จนกว่าจะยืนยันวันที่ดูราคา",
+  "_note": "ราคาต้องมาจากแหล่งจริงเท่านั้น ห้ามเดา: price_min/max คือช่วงราคารับซื้อ บาท/กก. ที่มาของแต่ละช่วงดู docs/DATA.md หัวข้อ ที่มาของราคา; price_date คือวันที่ดูราคา",
   "battery": {
     "label_th": "แบตเตอรี่ / ถ่านไฟฉาย", "material": null, "sellable": false,
     "price_min": null, "price_max": null, "price_source": null, "price_date": null,
@@ -14,13 +14,13 @@
   },
   "brown-glass": {
     "label_th": "ขวดแก้วสีชา", "material": "แก้วสีชา", "sellable": true,
-    "price_min": 0.8, "price_max": 1.2, "price_source": "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", "price_date": null,
+    "price_min": 0.8, "price_max": 1.2, "price_source": "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", "price_date": "2026-10-12",
     "prep_steps": ["เทของเหลวออกให้หมด", "ล้างให้สะอาด", "แยกฝาออก", "ระวังอย่าให้แตก"],
     "disposal": "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล"
   },
   "cardboard": {
     "label_th": "กล่องกระดาษ", "material": "กระดาษลัง", "sellable": true,
-    "price_min": 3.8, "price_max": 4.0, "price_source": "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", "price_date": null,
+    "price_min": 3.8, "price_max": 4.0, "price_source": "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", "price_date": "2026-10-12",
     "prep_steps": ["แกะเทปและสติกเกอร์ออก", "พับให้แบน", "เก็บให้แห้ง ไม่โดนน้ำ"],
     "disposal": "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล"
   },
@@ -32,25 +32,25 @@
   },
   "green-glass": {
     "label_th": "ขวดแก้วสีเขียว", "material": "แก้วสีเขียว", "sellable": true,
-    "price_min": 0.8, "price_max": 1.2, "price_source": "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", "price_date": null,
+    "price_min": 0.8, "price_max": 1.2, "price_source": "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", "price_date": "2026-10-12",
     "prep_steps": ["เทของเหลวออกให้หมด", "ล้างให้สะอาด", "แยกฝาออก", "ระวังอย่าให้แตก"],
     "disposal": "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล"
   },
   "metal": {
     "label_th": "โลหะ / กระป๋อง", "material": "โลหะ", "sellable": true,
-    "price_min": 7.2, "price_max": 67.0, "price_source": "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", "price_date": null,
+    "price_min": null, "price_max": null, "price_source": null, "price_date": null,
     "prep_steps": ["เทของเหลวออกให้หมด", "ล้างให้สะอาด", "บีบกระป๋องให้แบนเพื่อประหยัดที่"],
     "disposal": "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล"
   },
   "paper": {
     "label_th": "กระดาษ", "material": "กระดาษ", "sellable": true,
-    "price_min": 5.0, "price_max": 6.2, "price_source": "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", "price_date": null,
+    "price_min": 2.8, "price_max": 6.2, "price_source": "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", "price_date": "2026-10-12",
     "prep_steps": ["แยกกระดาษที่เปื้อนน้ำมันหรืออาหารออก", "เอาลวดเย็บและคลิปออก", "เก็บให้แห้ง"],
     "disposal": "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล"
   },
   "plastic": {
     "label_th": "พลาสติก", "material": "พลาสติก", "sellable": true,
-    "price_min": 2.5, "price_max": 9.5, "price_source": "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", "price_date": null,
+    "price_min": 2.5, "price_max": 9.5, "price_source": "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", "price_date": "2026-10-12",
     "prep_steps": ["เทของเหลวออกให้หมด", "ล้างให้สะอาด", "ตากให้แห้ง", "แยกฝาและฉลากออกถ้าร้านรับซื้อแยกประเภท"],
     "disposal": "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล"
   },
@@ -74,7 +74,7 @@
   },
   "white-glass": {
     "label_th": "ขวดแก้วใส", "material": "แก้วใส", "sellable": true,
-    "price_min": 1.2, "price_max": 1.2, "price_source": "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", "price_date": null,
+    "price_min": 1.2, "price_max": 1.2, "price_source": "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", "price_date": "2026-10-12",
     "prep_steps": ["เทของเหลวออกให้หมด", "ล้างให้สะอาด", "แยกฝาออก", "ระวังอย่าให้แตก"],
     "disposal": "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล"
   }
