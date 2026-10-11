@@ -7,13 +7,13 @@
 | คน     | งาน                                                 | ส่งอะไรเข้า repo                                                      |
 | ------ | --------------------------------------------------- | --------------------------------------------------------------------- |
 | ปาล์ม  | clean ข้อมูล (`notebooks/palm_data_cleaning.ipynb`) | ตัวเลข/กราฟสำหรับสไลด์ข้อ 2                                           |
-| แฟนต้า | เทรน + ประเมินผล (`notebooks/fanta_training.ipynb`) | `models/model.pt`, `confidence_threshold.csv`, กราฟสำหรับสไลด์ข้อ 3–4 |
+| แฟนต้า | เทรน + ประเมินผล (`notebooks/fanta_training.ipynb`) | ไฟล์โมเดล `.pt` + `category_map.json` (ส่งทางไดรฟ์ ไม่ commit `.pt`), กราฟสำหรับสไลด์ข้อ 3–4 |
 | A      | เว็บ + server + ตารางข้อมูล (repo นี้)              | ทุกอย่างใน `server/`, `web/`, `data/`                                 |
 
 ## ขั้นที่ 1: Server โหมด fake
 
 - `requirements.txt` ใช้ได้, `server/main.py`, `server/model.py`
-- โหมด fake (`FAKE_MODEL=1` หรือไม่มี `models/model.pt`): ใช้ 13 คลาสและ category map จาก `docs/DATA.md` สุ่มความน่าจะเป็น โดยให้ประมาณ 1 ใน 5 ครั้งมีความมั่นใจต่ำกว่าเกณฑ์ (เพื่อให้เห็นสถานะ "ไม่แน่ใจ") และส่ง `fake_model: true`
+- โหมด fake (`FAKE_MODEL=1` หรือไม่มีไฟล์ `.pt` ใน `models/`): ใช้ 13 คลาสและ category map จาก `docs/DATA.md` สุ่มความน่าจะเป็น โดยให้ประมาณ 1 ใน 5 ครั้งมีความมั่นใจต่ำกว่าเกณฑ์ (เพื่อให้เห็นสถานะ "ไม่แน่ใจ") และส่ง `fake_model: true`
 - `POST /api/predict` ส่ง JSON ตาม `docs/API.md` ครบทุกช่อง, `GET /api/health`
 - validate ไฟล์: ชนิด ขนาด เปิดได้
 - **เสร็จเมื่อ:** `pytest` ผ่าน: ทุกช่องใน response มีครบ, 13 คลาสครบใน `waste_info.json`, error 400/413 ถูกต้อง
@@ -29,9 +29,9 @@
 
 ## ขั้นที่ 3: ใส่โมเดลจริง
 
-- วาง `model.pt` จากแฟนต้าที่ `models/model.pt`
+- วางไฟล์โมเดลจากแฟนต้า (`convnext_tiny_fold1.pt`) และ `category_map.json` ที่ `models/` (ไม่ commit `.pt`)
 - `server/model.py` อ่าน `classes`, `category_map`, `img_size`, `mean`, `std` จากไฟล์ (ตาม `docs/DATA.md`)
-- ตั้ง `UNCERTAIN_THRESHOLD` จาก `confidence_threshold.csv`
+- `UNCERTAIN_THRESHOLD` ค่าเริ่มต้น 0.7 ตามที่ทีมเทรนวัดมา
 - **เสร็จเมื่อ:** ทดสอบกับรูปขยะจริงที่ทีมถ่าย 20–30 รูป ผลตรงกับที่ notebook ทายรูปเดียวกัน (ขั้นที่ 8 ใน notebook ของแฟนต้า)
 
 ## ขั้นที่ 4: ข้อมูลราคาและตรวจทาน

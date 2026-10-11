@@ -1,5 +1,6 @@
 import io
 import os
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, File, Request, UploadFile
@@ -17,13 +18,24 @@ PRICE_UNIT = "บาท/กก."
 WASTE_INFO = {k: v for k, v in load_json("waste_info.json").items() if not k.startswith("_")}
 CATEGORIES = load_json("categories.json")
 
-app = FastAPI(title="WasteValue AI")
+@asynccontextmanager
+async def lifespan(app):
+    # Load the model before serving: the page's health check gives up after 2.5 s
+    # and would drop into demo mode if the first request had to load a large file.
+    try:
+        get_predictor(threshold())
+    except ModelUnavailable as e:
+        print(f"[warn] {e}")
+    yield
+
+
+app = FastAPI(title="WasteValue AI", lifespan=lifespan)
 
 def threshold():
     try:
-        return float(os.environ.get("UNCERTAIN_THRESHOLD", "0.6"))
+        return float(os.environ.get("UNCERTAIN_THRESHOLD", "0.7"))
     except ValueError:
-        return 0.6
+        return 0.7
 
 def error(status, message):
     return JSONResponse({"error": message}, status_code=status)

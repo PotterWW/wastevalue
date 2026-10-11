@@ -1,4 +1,4 @@
-"""Prediction backend: a real MobileNetV2 checkpoint, or a random fake for UI work."""
+"""Prediction backend: a trained checkpoint (torch), or a random fake for UI work."""
 import json
 import os
 import random
@@ -6,7 +6,13 @@ from dataclasses import dataclass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-MODEL_PATH = ROOT / "models" / "model.pt"
+MODEL_DIR = ROOT / "models"
+CATEGORY_MAP_PATH = MODEL_DIR / "category_map.json"
+
+# Must match training (resize straight to 224x224, ImageNet normalization). Do not change.
+IMAGE_SIZE = 224
+MEAN = [0.485, 0.456, 0.406]
+STD = [0.229, 0.224, 0.225]
 
 # Reference order from docs/DATA.md. Only used by fake mode; the real model's own list wins.
 FAKE_CLASSES = [
@@ -60,9 +66,14 @@ class FakePredictor:
 
 
 class TorchPredictor:
+    """Loads a checkpoint saved by the training team (see docs/DATA.md).
+
+    Checkpoint keys: model_name, class_order, state_dict. The category table lives in
+    models/category_map.json. Preprocessing must match training: direct resize, no crop.
+    """
     fake = False
 
-    def __init__(self, path):
+    def __init__(self, path, category_map_path=CATEGORY_MAP_PATH):
         try:
             import torch
             from torch import nn
@@ -70,41 +81,75 @@ class TorchPredictor:
         except ImportError as e:
             raise ModelUnavailable("ยังไม่ได้ติดตั้ง torch/torchvision (pip install -r requirements.txt)") from e
         try:
-            ckpt = torch.load(path, map_location="cpu", weights_only=False)
-            self.classes = list(ckpt["classes"])
-            self.category_map = dict(ckpt["category_map"])
-            size = int(ckpt.get("img_size", 224))
-            net = models.mobilenet_v2(weights=None)
-            net.classifier[1] = nn.Linear(1280, len(self.classes))
+            ckpt = torch.load(path, map_location="cpu")
+            self.classes = list(ckpt["class_order"])
+            net = _build_net(ckpt["model_name"], len(self.classes), models, nn)
             net.load_state_dict(ckpt["state_dict"])
             net.eval()
         except Exception as e:
-            raise ModelUnavailable("โหลดไฟล์โมเดลไม่สำเร็จ ตรวจ models/model.pt") from e
+            raise ModelUnavailable(f"โหลดไฟล์โมเดล {Path(path).name} ไม่สำเร็จ: {e}") from e
+        try:
+            with open(category_map_path, encoding="utf-8") as f:
+                self.category_map = json.load(f)
+        except Exception as e:
+            raise ModelUnavailable("อ่าน models/category_map.json ไม่ได้") from e
+        missing = set(self.classes) - set(self.category_map)
+        if missing:
+            raise ModelUnavailable(f"models/category_map.json ไม่มีคลาส: {sorted(missing)}")
+        self.model_name = ckpt["model_name"]
         self._torch = torch
         self._net = net
-        # Same preprocessing as training: direct resize (no crop), then normalize.
         self._tf = transforms.Compose([
-            transforms.Resize((size, size)),
+            transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
             transforms.ToTensor(),
-            transforms.Normalize(ckpt.get("mean", [0.485, 0.456, 0.406]), ckpt.get("std", [0.229, 0.224, 0.225])),
+            transforms.Normalize(MEAN, STD),
         ])
 
     def predict(self, image):
-        x = self._tf(image.convert("RGB")).unsqueeze(0)
-        with self._torch.no_grad():
-            probs = self._torch.softmax(self._net(x), dim=1)[0]
+        from PIL import ImageOps
+        # Phone photos keep rotation in EXIF; without this the model sees them sideways.
+        image = ImageOps.exif_transpose(image).convert("RGB")
+        x = self._tf(image).unsqueeze(0)
+        with self._torch.inference_mode():
+            probs = self._torch.softmax(self._net(x).float(), dim=1)[0]
         (p1, p2), (i1, i2) = self._torch.topk(probs, 2)
         return Prediction(self.classes[int(i1)], float(p1), self.classes[int(i2)], float(p2))
+
+
+def _build_net(name, num_classes, models, nn):
+    if name == "convnext_tiny":
+        m = models.convnext_tiny(weights=None)
+        m.classifier[2] = nn.Linear(m.classifier[2].in_features, num_classes)
+    elif name == "efficientnet_b0":
+        m = models.efficientnet_b0(weights=None)
+        m.classifier[1] = nn.Linear(m.classifier[1].in_features, num_classes)
+    elif name == "resnet50":
+        m = models.resnet50(weights=None)
+        m.fc = nn.Linear(m.fc.in_features, num_classes)
+    else:
+        raise ValueError(f"ไม่รู้จักโมเดล {name}")
+    return m
+
+
+def find_checkpoint():
+    """MODEL_PATH env, else models/model.pt, else the first models/*.pt. None -> fake mode."""
+    env = os.environ.get("MODEL_PATH")
+    if env:
+        return Path(env)
+    if (MODEL_DIR / "model.pt").exists():
+        return MODEL_DIR / "model.pt"
+    found = sorted(MODEL_DIR.glob("*.pt"))
+    return found[0] if found else None
 
 
 _cache = {}
 
 
 def get_predictor(threshold):
-    """Fake mode when FAKE_MODEL=1 or models/model.pt is missing."""
-    use_fake = os.environ.get("FAKE_MODEL") == "1" or not MODEL_PATH.exists()
-    key = "fake" if use_fake else "real"
+    """Fake mode when FAKE_MODEL=1 or no checkpoint is found in models/."""
+    path = None if os.environ.get("FAKE_MODEL") == "1" else find_checkpoint()
+    key = str(path) if path else "fake"
     if key not in _cache:
-        _cache[key] = FakePredictor(threshold) if use_fake else TorchPredictor(MODEL_PATH)
+        _cache[key] = TorchPredictor(path) if path else FakePredictor(threshold)
     _cache[key].threshold = threshold
     return _cache[key]

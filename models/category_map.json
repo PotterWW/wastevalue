@@ -1,0 +1,15 @@
+{
+  "battery": "hazardous",
+  "biological": "organic",
+  "cardboard": "recyclable",
+  "paper": "recyclable",
+  "metal": "recyclable",
+  "plastic": "recyclable",
+  "white-glass": "recyclable",
+  "brown-glass": "recyclable",
+  "green-glass": "recyclable",
+  "clothes": "general",
+  "shoes": "general",
+  "trash_general": "general",
+  "trash_infectious": "infectious"
+}

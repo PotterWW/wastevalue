@@ -9,3 +9,6 @@ venv/
 # ชุดข้อมูลภาพไม่เก็บใน repo (อยู่ใน Google Drive ของทีม)
 data/raw/
 *.zip
+
+# โมเดลที่เทรนแล้ว (ใหญ่เกิน 100 MB ของ GitHub) วางเองที่ models/
+models/*.pt

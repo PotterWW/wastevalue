@@ -5,7 +5,7 @@
 
 ## `GET /api/health`
 ```json
-{ "ok": true, "fake_model": false, "classes": 13, "threshold": 0.6 }
+{ "ok": true, "fake_model": false, "classes": 13, "threshold": 0.7 }
 ```
 
 ## `POST /api/predict`
@@ -37,10 +37,10 @@
 ```
 
 ### กฎของแต่ละช่อง
-- `class` หนึ่งใน 13 คลาส (`docs/DATA.md`) — มาจาก `model.pt`
+- `class` หนึ่งใน 13 คลาส (`docs/DATA.md`) — มาจาก `class_order` ในไฟล์โมเดล
 - `confidence` 0–1 ของคลาสอันดับ 1, `runner_up` คืออันดับ 2 (ส่งเสมอ)
 - `uncertain` = `confidence < UNCERTAIN_THRESHOLD` เมื่อเป็น `true` ช่องอื่นยังส่งครบ แต่หน้าเว็บแสดงสถานะ "ไม่แน่ใจ"
-- `category`, `category_th`, `bin`, `warning` มาจาก `data/categories.json` ตาม `category_map` ใน `model.pt`
+- `category`, `category_th`, `bin`, `warning` มาจาก `data/categories.json` ตาม `models/category_map.json`
 - `label_th`, `material`, `sellable`, `price_*`, `prep_steps`, `disposal` มาจาก `data/waste_info.json`
 - `price_min` / `price_max` เป็น `null` ได้ (ยังไม่มีข้อมูล หรือขายไม่ได้) หน้าเว็บต้องรองรับ
 - `fake_model: true` เมื่อรันโหมดสุ่ม หน้าเว็บแสดงป้ายเล็กๆ ว่า "โหมดทดสอบ"

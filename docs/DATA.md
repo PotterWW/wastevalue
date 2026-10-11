@@ -24,19 +24,19 @@ Garbage Classification (12 classes) จาก Kaggle (ผู้อัปโห�
 | 11 | trash_infectious | ขยะติดเชื้อ (หน้ากากอนามัย ผ้าอนามัย ผ้าอ้อม) | infectious |
 | 12 | white-glass | แก้วใส | recyclable |
 
-**แหล่งความจริงคือ `model.pt`** — server ต้องอ่าน `classes` และ `category_map` จากไฟล์นี้ ตารางข้างบนเป็นเอกสารอ้างอิง
+**แหล่งความจริงของลำดับคลาสคือ `class_order` ในไฟล์โมเดล** — server ต้องอ่านจากไฟล์ ห้าม hardcode ตารางข้างบนเป็นเอกสารอ้างอิง
 
-## รูปแบบ `models/model.pt` (จาก `notebooks/fanta_training.ipynb`)
-`torch.load(path, map_location="cpu", weights_only=False)` ได้ dict:
+## รูปแบบไฟล์โมเดล (จากทีมเทรน ไม่ได้เทรนใน repo นี้)
+วางที่ `models/` เช่น `models/convnext_tiny_fold1.pt` (ประมาณ 111 MB **ห้าม commit** มี `.gitignore` กันไว้) คู่กับ `models/category_map.json` (commit ได้ อย่าแก้โดยไม่คุยกับทีมเทรน)
+
+`torch.load(path, map_location="cpu")` ได้ dict:
 | key | ค่า |
 |---|---|
-| `arch` | `"mobilenet_v2"` |
-| `state_dict` | น้ำหนักของ `torchvision.models.mobilenet_v2(weights=None)` ที่เปลี่ยน `classifier[1]` เป็น `nn.Linear(1280, len(classes))` |
-| `classes` | list 13 ชื่อ เรียงตาม label index |
-| `category_map` | dict class → category |
-| `img_size` | `224` |
-| `mean`, `std` | ค่า normalize |
-| `experiment` | การทดลองที่ชนะ (`A_no_aug` หรือ `B_aug`) |
+| `model_name` | `"convnext_tiny"` (รองรับ `efficientnet_b0`, `resnet50` ด้วย) |
+| `state_dict` | น้ำหนักของ `torchvision.models.convnext_tiny(weights=None)` ที่เปลี่ยน `classifier[2]` เป็น `nn.Linear(in_features, len(class_order))` |
+| `class_order` | list 13 ชื่อ เรียงตาม label index |
+
+`models/category_map.json` คือ dict class → category (13 คลาสต้องมีครบ) ค่า mean/std/ขนาดรูปไม่อยู่ในไฟล์ ใช้ค่าคงที่ใน `server/model.py` (224×224, ImageNet mean/std) ซึ่งต้องตรงกับตอนเทรน
 
 ## `data/categories.json`
 ข้อมูลรายประเภทขยะ: ชื่อไทย ถังที่ทิ้ง ข้อความเตือน (ถ้ามี) และตัวอย่างสำหรับหน้า Waste Guide

@@ -38,7 +38,7 @@ def test_categories_cover_category_map():
 
 def test_health(client):
     body = client.get("/api/health").json()
-    assert body == {"ok": True, "fake_model": True, "classes": 13, "threshold": 0.6}
+    assert body == {"ok": True, "fake_model": True, "classes": 13, "threshold": 0.7}
 
 
 def test_predict_returns_every_field(client):
@@ -68,7 +68,7 @@ def test_predict_consistent_with_tables(client):
         assert b["bin"] == cats[b["category"]]["bin"]
         assert b["warning"] == cats[b["category"]]["warning"]
         assert b["sellable"] == info[b["class"]]["sellable"]
-        assert b["uncertain"] == (b["confidence"] < 0.6)
+        assert b["uncertain"] == (b["confidence"] < 0.7)
         if not b["sellable"]:
             assert b["price_min"] is None and b["price_max"] is None
 
