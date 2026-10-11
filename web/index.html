@@ -104,6 +104,9 @@ header.nav { background: var(--white); border-bottom: 1px solid var(--line); }
 .preview-frame img { display: block; max-width: 100%; max-height: 340px; border-radius: 22px; object-fit: contain; background: var(--white); box-shadow: 0 8px 24px rgba(18,59,42,.14); }
 .scan-overlay { position: absolute; inset: 0; border-radius: 22px; background: rgba(18,59,42,.28); border: 3px solid var(--green-500); overflow: hidden; }
 .scan-line { position: absolute; left: 0; right: 0; height: 5px; background: #7DF0A8; box-shadow: 0 0 22px 8px rgba(125,240,168,.65); animation: wv-scan 1.8s ease-in-out infinite; }
+.rm-btn { position: absolute; top: -12px; right: -12px; width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--white); background: var(--ink); color: var(--white); display: flex; align-items: center; justify-content: center; cursor: pointer; line-height: 0; box-shadow: 0 4px 12px rgba(18,59,42,.25); transition: background .15s ease; }
+.rm-btn:hover { background: var(--warn-strong); }
+.rm-btn:focus-visible { outline: 3px solid var(--green-500); outline-offset: 3px; }
 .fname { font-size: 14px; color: var(--muted); word-break: break-all; text-align: center; }
 .upload-actions { display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .row-wrap { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
@@ -394,6 +397,9 @@ footer { background: var(--surface-2); padding-block: 56px 40px; }
         <div class="preview-frame">
           <img id="previewImg" alt="ตัวอย่างรูปขยะที่อัปโหลด">
           <div class="scan-overlay" id="scan" hidden><div class="scan-line"></div></div>
+          <button class="rm-btn" id="removeBtn" type="button" aria-label="ลบรูปและผลลัพธ์" title="ลบรูปและผลลัพธ์">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg>
+          </button>
         </div>
         <p class="fname" id="fileName"></p>
       </div>
@@ -413,6 +419,7 @@ footer { background: var(--surface-2); padding-block: 56px 40px; }
           <input class="vh" id="pick2" type="file" accept="image/png,image/jpeg">
           เปลี่ยนรูป
         </label>
+        <button class="btn btn-ghost btn-md" id="clearBtn" type="button" hidden>ลบรูปและผลลัพธ์</button>
         <button class="btn btn-primary btn-lg" id="analyzeBtn" type="button">
           <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>
           วิเคราะห์ด้วย AI
@@ -604,6 +611,9 @@ footer { background: var(--surface-2); padding-block: 56px 40px; }
   const $ = (id) => document.getElementById(id);
   let file = null, previewUrl = "", demoMode = false, demoIdx = 0, runs = 0, current = null, weight = "1";
 
+  const EMPTY_RESULT = $("resultBody").innerHTML;
+  let reqSeq = 0; // bumped on every analyze/clear so a stale response is ignored
+
   function setError(msg) { $("errorText").textContent = msg || ""; $("error").hidden = !msg; }
 
   function setFile(f) {
@@ -613,10 +623,25 @@ footer { background: var(--surface-2); padding-block: 56px 40px; }
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     file = f; previewUrl = URL.createObjectURL(f);
     $("previewImg").src = previewUrl; $("fileName").textContent = f.name;
-    $("dropEmpty").hidden = true; $("preview").hidden = false; $("changeBtn").hidden = false;
+    $("dropEmpty").hidden = true; $("preview").hidden = false; $("changeBtn").hidden = false; $("clearBtn").hidden = false;
     setError("");
   }
   ["pick1", "pick2"].forEach((id) => $(id).addEventListener("change", (e) => { setFile(e.target.files && e.target.files[0]); e.target.value = ""; }));
+  // Remove the photo and every result derived from it (e.g. before the next person uses the same computer).
+  function clearAll() {
+    reqSeq++; busy(false);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    file = null; previewUrl = ""; weight = "1"; current = null;
+    $("previewImg").removeAttribute("src"); $("fileName").textContent = "";
+    $("preview").hidden = true; $("dropEmpty").hidden = false;
+    $("changeBtn").hidden = true; $("clearBtn").hidden = true;
+    $("doneChip").hidden = true; $("fakeBadge").hidden = true;
+    setError("");
+    if (demoMode) show(DEMO[demoIdx].r, false); else $("resultBody").innerHTML = EMPTY_RESULT;
+  }
+  $("removeBtn").addEventListener("click", clearAll);
+  $("clearBtn").addEventListener("click", clearAll);
+
   const drop = $("drop");
   drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("dragging"); });
   drop.addEventListener("dragleave", () => drop.classList.remove("dragging"));
@@ -629,10 +654,12 @@ footer { background: var(--surface-2); padding-block: 56px 40px; }
   async function analyze() {
     if (!file) { setError("กรุณาอัปโหลดรูปขยะก่อนกดวิเคราะห์"); return; }
     setError(""); busy(true);
+    const seq = ++reqSeq;
     try {
       let data;
       if (demoMode) {
         await new Promise((r) => setTimeout(r, 1600));
+        if (seq !== reqSeq) return;
         demoIdx = runs % DEMO.length; data = DEMO[demoIdx].r;
       } else {
         const fd = new FormData(); fd.append("file", file);
@@ -641,15 +668,17 @@ footer { background: var(--surface-2); padding-block: 56px 40px; }
         if (!res.ok) throw new Error((body && body.error) || "วิเคราะห์ไม่สำเร็จ ลองใหม่อีกครั้ง");
         data = body;
       }
+      if (seq !== reqSeq) return;
       runs++;
       $("doneText").textContent = "วิเคราะห์รูป " + file.name + " เสร็จแล้ว";
       $("doneChip").hidden = false;
       show(data, true);
       $("result").scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (err) {
+      if (seq !== reqSeq) return;
       setError(err && err.message && !/fetch|network/i.test(err.message) ? err.message
         : "เชื่อมต่อ server ไม่ได้ ตรวจว่ารัน uvicorn อยู่ แล้วลองใหม่");
-    } finally { busy(false); }
+    } finally { if (seq === reqSeq) busy(false); }
   }
   $("analyzeBtn").addEventListener("click", analyze);
 
