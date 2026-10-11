@@ -115,3 +115,26 @@ def test_index_served(client):
 
 def test_favicon_does_not_404(client):
     assert client.get("/favicon.ico").status_code == 204
+
+
+def test_prices_have_sources_and_only_for_sellable():
+    info = json.loads((ROOT / "data" / "waste_info.json").read_text(encoding="utf-8"))
+    for name, row in info.items():
+        if name.startswith("_"):
+            continue
+        has_price = row["price_min"] is not None or row["price_max"] is not None
+        if not row["sellable"]:
+            assert not has_price and row["price_source"] is None, name
+        if has_price:
+            assert row["price_min"] is not None and row["price_max"] is not None, name
+            assert 0 < row["price_min"] <= row["price_max"], name
+            assert row["price_source"], f"{name}: price without a source"
+            if row["price_date"] is not None:
+                assert len(row["price_date"]) == 10, name  # YYYY-MM-DD
+
+
+def test_demo_plastic_price_matches_data():
+    info = json.loads((ROOT / "data" / "waste_info.json").read_text(encoding="utf-8"))["plastic"]
+    html = (ROOT / "web" / "index.html").read_text(encoding="utf-8")
+    assert f'price_min: {info["price_min"]}, price_max: {info["price_max"]}' in html
+    assert info["price_source"] in html

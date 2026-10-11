@@ -579,8 +579,8 @@ footer { background: var(--surface-2); padding-block: 56px 40px; }
   const DEMO = [
     { tab: "พลาสติก · ขายได้", r: { class: "plastic", label_th: "พลาสติก", confidence: 0.93, uncertain: false,
       runner_up: { class: "white-glass", label_th: "ขวดแก้วใส", confidence: 0.04 }, category: "recyclable", category_th: "ขยะรีไซเคิล",
-      bin: "ถังขยะรีไซเคิล (สีเหลือง)", material: "พลาสติก", sellable: true, price_min: 8, price_max: 12, price_unit: "บาท/กก.",
-      price_source: "ตัวเลขตัวอย่างจากดีไซน์ ไม่ใช่ราคาจริง", price_date: null,
+      bin: "ถังขยะรีไซเคิล (สีเหลือง)", material: "พลาสติก", sellable: true, price_min: 2.5, price_max: 9.5, price_unit: "บาท/กก.",
+      price_source: "วงษ์พาณิชย์ เซนเตอร์ จำกัด (ทำลายเอกสารฟรี.com/price)", price_date: null,
       prep_steps: ["เทของเหลวออกให้หมด", "ล้างให้สะอาด", "ตากให้แห้ง", "แยกฝาและฉลากออกถ้าร้านรับซื้อแยกประเภท"],
       disposal: "ถ้าไม่ขาย ทิ้งในถังขยะรีไซเคิล", warning: null } },
     { tab: "รองเท้า · ขยะทั่วไป", r: { class: "shoes", label_th: "รองเท้า", confidence: 0.71, uncertain: false,
@@ -723,7 +723,7 @@ footer { background: var(--surface-2); padding-block: 56px 40px; }
     if (r.sellable) {
       const hasPrice = r.price_min != null && r.price_max != null;
       right = '<div class="panel green"><div style="display:flex;flex-direction:column;gap:4px"><p class="panel-label">' + svg("tag", 20) + ' ราคารับซื้อโดยประมาณ</p>' +
-        (hasPrice ? '<p class="price">' + fmt(r.price_min) + '–' + fmt(r.price_max) + ' <span>' + esc(r.price_unit || "บาท/กก.") + '</span></p>'
+        (hasPrice ? '<p class="price">' + range(r.price_min, r.price_max) + ' <span>' + esc(r.price_unit || "บาท/กก.") + '</span></p>'
                   : '<p class="price na">ยังไม่มีข้อมูลราคา</p>') + '</div>' +
         (hasPrice ? '<div class="weight"><label for="weight">น้ำหนักโดยประมาณ (กก.)</label><div class="weight-box">' +
           '<input id="weight" type="number" inputmode="decimal" min="0" max="100000" step="0.1"><span>กก.</span></div></div>' +
@@ -768,10 +768,11 @@ footer { background: var(--surface-2); padding-block: 56px 40px; }
   }
 
   function fmt(v) { return String(Math.round(v * 10) / 10); }
+  function range(a, b) { return fmt(a) === fmt(b) ? fmt(a) : fmt(a) + "–" + fmt(b); }
   function updateValue() {
     const el = $("valueRange"); if (!el || !current) return;
     const w = parseFloat(weight);
-    el.textContent = isFinite(w) && w > 0 ? fmt(w * current.price_min) + "–" + fmt(w * current.price_max) : "—";
+    el.textContent = isFinite(w) && w > 0 ? range(w * current.price_min, w * current.price_max) : "—";
   }
 
   // ---------- โหมดสาธิต ----------
