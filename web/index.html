@@ -419,7 +419,6 @@ footer { background: var(--surface-2); padding-block: 56px 40px; }
           <input class="vh" id="pick2" type="file" accept="image/png,image/jpeg">
           เปลี่ยนรูป
         </label>
-        <button class="btn btn-ghost btn-md" id="clearBtn" type="button" hidden>ลบรูปและผลลัพธ์</button>
         <button class="btn btn-primary btn-lg" id="analyzeBtn" type="button">
           <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>
           วิเคราะห์ด้วย AI
@@ -623,7 +622,7 @@ footer { background: var(--surface-2); padding-block: 56px 40px; }
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     file = f; previewUrl = URL.createObjectURL(f);
     $("previewImg").src = previewUrl; $("fileName").textContent = f.name;
-    $("dropEmpty").hidden = true; $("preview").hidden = false; $("changeBtn").hidden = false; $("clearBtn").hidden = false;
+    $("dropEmpty").hidden = true; $("preview").hidden = false; $("changeBtn").hidden = false;
     setError("");
   }
   ["pick1", "pick2"].forEach((id) => $(id).addEventListener("change", (e) => { setFile(e.target.files && e.target.files[0]); e.target.value = ""; }));
@@ -634,13 +633,12 @@ footer { background: var(--surface-2); padding-block: 56px 40px; }
     file = null; previewUrl = ""; weight = "1"; current = null;
     $("previewImg").removeAttribute("src"); $("fileName").textContent = "";
     $("preview").hidden = true; $("dropEmpty").hidden = false;
-    $("changeBtn").hidden = true; $("clearBtn").hidden = true;
+    $("changeBtn").hidden = true;
     $("doneChip").hidden = true; $("fakeBadge").hidden = true;
     setError("");
     if (demoMode) show(DEMO[demoIdx].r, false); else $("resultBody").innerHTML = EMPTY_RESULT;
   }
   $("removeBtn").addEventListener("click", clearAll);
-  $("clearBtn").addEventListener("click", clearAll);
 
   const drop = $("drop");
   drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("dragging"); });
