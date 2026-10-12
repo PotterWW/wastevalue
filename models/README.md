@@ -1,6 +1,6 @@
 # models/
 
-วางไฟล์โมเดลที่เทรนแล้ว (เช่น `convnext_tiny_fold1.pt` ประมาณ 111 MB) ไว้ที่นี่
+วางไฟล์โมเดลที่เทรนแล้ว (เช่น `convnext_tiny_fold2.pt` ประมาณ 111 MB) ไว้ที่นี่
 **ห้าม commit ไฟล์ `.pt`** (เกิน 100 MB ของ GitHub และถูก `.gitignore` ไว้แล้ว) ส่งต่อกันทาง Google Drive
 `category_map.json` เป็นตารางจากทีมเทรน commit ได้ อย่าแก้ถ้าไม่ได้คุยกับทีม รูปแบบไฟล์ดูที่ `docs/DATA.md`
 

@@ -29,7 +29,7 @@
 
 ## ขั้นที่ 3: ใส่โมเดลจริง
 
-- วางไฟล์โมเดลจากแฟนต้า (`convnext_tiny_fold1.pt`) และ `category_map.json` ที่ `models/` (ไม่ commit `.pt`)
+- วางไฟล์โมเดลจากแฟนต้า (`convnext_tiny_fold2.pt`) และ `category_map.json` ที่ `models/` (ไม่ commit `.pt`)
 - `server/model.py` อ่าน `classes`, `category_map`, `img_size`, `mean`, `std` จากไฟล์ (ตาม `docs/DATA.md`)
 - `UNCERTAIN_THRESHOLD` ค่าเริ่มต้น 0.7 ตามที่ทีมเทรนวัดมา
 - **เสร็จเมื่อ:** ทดสอบกับรูปขยะจริงที่ทีมถ่าย 20–30 รูป ผลตรงกับที่ notebook ทายรูปเดียวกัน (ขั้นที่ 8 ใน notebook ของแฟนต้า)

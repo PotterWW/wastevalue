@@ -28,7 +28,7 @@ uvicorn server.main:app --port 8000
 ครั้งต่อไปแค่ activate venv แล้วรัน `uvicorn` อีกครั้ง
 
 ### ใส่โมเดลจริง
-ไฟล์โมเดล (`convnext_tiny_fold1.pt` ประมาณ 111 MB) **ไม่อยู่ใน git** ขอจากแฟนต้าแล้ววางไว้ที่ `models/` ข้างๆ `category_map.json` แล้วรัน server ใหม่
+ไฟล์โมเดล (`convnext_tiny_fold2.pt` ประมาณ 111 MB) **ไม่อยู่ใน git** ขอจากแฟนต้าแล้ววางไว้ที่ `models/` ข้างๆ `category_map.json` แล้วรัน server ใหม่
 - ไม่มีไฟล์ `.pt` → ระบบเข้าโหมดทดสอบ (สุ่มคำตอบ) เอง หน้าเว็บจะมีป้าย "โหมดทดสอบ"
 - เช็กว่าโหลดโมเดลจริงแล้ว: เปิด http://localhost:8000/api/health ต้องเห็น `"fake_model": false`
 - ถ้าเปิดหน้าเว็บแล้วขึ้น "โหมดสาธิต" แสดงว่าหน้าเว็บต่อ server ไม่ได้ (ลอง http://localhost:8000/api/health ดู)

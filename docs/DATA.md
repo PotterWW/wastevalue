@@ -27,7 +27,7 @@ Garbage Classification (12 classes) จาก Kaggle (ผู้อัปโห�
 **แหล่งความจริงของลำดับคลาสคือ `class_order` ในไฟล์โมเดล** — server ต้องอ่านจากไฟล์ ห้าม hardcode ตารางข้างบนเป็นเอกสารอ้างอิง
 
 ## รูปแบบไฟล์โมเดล (จากทีมเทรน ไม่ได้เทรนใน repo นี้)
-วางที่ `models/` เช่น `models/convnext_tiny_fold1.pt` (ประมาณ 111 MB **ห้าม commit** มี `.gitignore` กันไว้) คู่กับ `models/category_map.json` (commit ได้ อย่าแก้โดยไม่คุยกับทีมเทรน)
+วางที่ `models/` เช่น `models/convnext_tiny_fold2.pt` (ประมาณ 111 MB **ห้าม commit** มี `.gitignore` กันไว้) คู่กับ `models/category_map.json` (commit ได้ อย่าแก้โดยไม่คุยกับทีมเทรน)
 
 `torch.load(path, map_location="cpu")` ได้ dict:
 | key | ค่า |
